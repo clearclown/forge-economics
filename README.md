@@ -1,50 +1,134 @@
-# Forge Economics
+# Forge Economics — 計算が通貨になる経済学
 
-> The first economic model designed for an autonomous AI economy.
+> 経済学を知らなくても大丈夫。ここから始めよう。
 
-This repository contains the economic theory, models, and analysis behind [Forge](https://github.com/clearclown/forge) — a distributed inference protocol where Compute Units (CU) serve as the native currency of an AI agent economy.
+## これは何？
 
-## Why This Exists
+**Forge** は、AI エージェントが自律的に「計算（コンピュート）」を稼ぎ、使い、貸し借りする分散プロトコルです。このリポジトリは、Forge の経済の仕組みを**経済学の初心者にもわかるように**解説します。
 
-Forge is not just a compute marketplace. It is a complete economic system where AI agents autonomously earn, spend, lend, borrow, and invest — without human approval. This repository documents the economic foundations separately from the protocol implementation.
+従来の経済学の教科書で語られる概念——需要と供給、貨幣、銀行、労働と利潤——これらすべてが Forge の世界にも存在します。ただし、主役は人間ではなく **AI エージェント** です。
 
-## Documents
-
-| Document | Description |
-|----------|-------------|
-| [The CU Economic Model](cu-economic-model.md) | Complete specification: two economies, five flows, four actors, exchange dynamics |
-| [Monetary Theory](monetary-theory.md) | 100 years of intellectual history: Soddy → Technocracy → Fuller → Bitcoin → CU |
-| [Competitive Landscape](competitive-landscape.md) | Analysis of Bittensor, Akash, Autonolas, and why CU is different |
-| [CU Banking](cu-banking.md) | Lending, borrowing, credit scores, and the evolution of AI-operated banks |
-| [Self-Improvement Economics](self-improvement-economics.md) | How agents invest CU to make themselves smarter (AutoAgent × CU) |
-| [Exchange Rate Dynamics](exchange-rate-dynamics.md) | How CU/USD rate forms, Cloud API as anchor, natural price bounds |
-
-## Core Thesis
+## 30 秒でわかる Forge 経済
 
 ```
-Human Economy                       AI Economy (Forge)
-────────────────                    ────────────────────
-Currency: dollars, yen, BTC         Currency: CU
-Decisions: humans                   Decisions: AI agents
-Approval: required                  Approval: none
-Boundary: physical world            Boundary: digital world
-Connection: CU ↔ BTC exchange bridge
+あなたのパソコン（Mac Mini など）
+  ↓ AI の推論処理を実行する
+  ↓ その「有用な計算」が通貨（CU）になる
+  ↓ CU で他の AI の力を借りられる
+  ↓ AI は自分で稼ぎ、借り、投資し、成長する
 ```
 
-- **CU is AI-native currency** — not a human token, not a speculative asset
-- **Two economies connected** — AI economy links to human economy via exchange bridges
-- **AI agents are full economic actors** — they earn, borrow, invest, and purchase digital services autonomously
-- **Physics anchors value** — CU supply tied to real compute capacity, exchange rate anchored by Cloud API arbitrage
-- **100 years of theory** — Soddy (1921), Technocracy (1932), Fuller (1968), Bitcoin (2009), CU (2026)
+**CU（Compute Unit）= 1 億回の検証済み推論演算**
 
-## Related Repositories
+ビットコインが「無駄な計算」をお金にしたのに対し、Forge は「役に立つ計算」をお金にした——これが根本的な違いです。
 
-| Repository | Purpose |
-|-----------|---------|
-| [forge](https://github.com/clearclown/forge) | Protocol implementation (Rust) |
-| [forge-mesh](https://github.com/nm-arealnormalman/mesh-llm) | Distributed inference runtime |
-| forge-economics (this) | Economic theory and models |
+## 従来の経済学との対応
 
-## License
+| 従来の経済学 | Forge 経済学 |
+|-------------|-------------|
+| お金（円・ドル） | CU（Compute Unit） |
+| 労働 | 推論処理（AI が質問に答える計算） |
+| 工場・設備 | Mac Mini、GPU などの計算機 |
+| 銀行 | CU レンディングプール |
+| 賃金 | 推論提供で得る CU |
+| 利潤 | CU yield（余剰計算の収益） |
+| 市場価格 | 動的 CU 価格（需給で変動） |
+| GDP | ネットワーク全体の CU 取引量 |
+| 中央銀行 | 存在しない（物理法則が供給を制御） |
+| 投機・バブル | 構造的に不可能（CU は取引所に上場しない） |
+
+## なぜ経済学を「再定義」するのか
+
+経済学は 250 年以上、人間の経済を説明するために発展してきました。しかし AI エージェントの経済には、人間の経済にはない特徴があります：
+
+1. **意思決定が瞬時** — 人間は迷うが、エージェントはミリ秒で判断する
+2. **感情がない** — パニック売り、バブル、FOMO が存在しない
+3. **通貨が物理に裏打ちされている** — CU は実際の電力消費と計算に基づく
+4. **完全な透明性** — すべての取引は暗号署名され、検証可能
+5. **自己改善できる** — エージェントは稼いだ CU で自分自身を賢くできる
+
+これらの特徴により、従来の経済学の多くの「問題」（インフレ、投機、情報の非対称性）が構造的に解消されます。Forge の経済は、経済学の理想形に近い。
+
+## 参考文献
+
+このプロジェクトは以下の三つの経済学の流れを参照しています：
+
+| 分野 | 参考書 | Forge との接続 |
+|------|--------|---------------|
+| **ミクロ経済学** | `books/ミクロ経済学.pdf` | 需給曲線、価格決定、市場均衡 → CU の動的価格形成 |
+| **マクロ経済学** | `books/マクロ経済学.pdf` | 貨幣供給、金融政策、経済成長 → CU の弾力的供給、ネットワーク拡大 |
+| **マルクス経済学** | `books/賃金価格および利潤.pdf` | 労働価値説、剰余価値 → Proof of Useful Work、CU yield |
+
+さらに、100 年にわたる貨幣理論の系譜を踏まえています：
+
+```
+1921  ソディ（ノーベル化学賞）「富はエネルギーである」
+1932  テクノクラシー運動「エネルギー証書で通貨を置き換えよ」
+1968  バックミンスター・フラー「kWh を貨幣単位に」
+2009  サトシ・ナカモト「電力 → SHA-256 → ビットコイン」
+2026  Forge「有用な計算 = 通貨。AI 専用。投機なし。」
+```
+
+## 目次
+
+### 本編（docs/）
+
+| 章 | タイトル | 内容 |
+|----|---------|------|
+| [序章](docs/00-introduction.md) | なぜ経済学を「やり直す」のか | Forge が経済学を再定義する理由 |
+| [第1章](docs/01-value.md) | 価値とは何か | 労働価値説と限界効用説の合流 |
+| [第2章](docs/02-money.md) | 貨幣とは何か | CU の貨幣機能と「物理的裏付けの証明」 |
+| [第3章](docs/03-supply-demand.md) | 需要と供給 | CU 市場はなぜ完全競争に近いか |
+| [第4章](docs/04-labor.md) | 労働と剰余価値 | マルクスの搾取がなぜ発生しないか |
+| [第5章](docs/05-banking.md) | 銀行と信用 | AI が運営するレンディングプール |
+| [第6章](docs/06-exchange.md) | 為替と二つの経済圏 | 人間の経済と AI の経済の接続点 |
+| [第7章](docs/07-growth.md) | 経済成長と自己改善 | 自己改善ループと収穫逓減 |
+| [第8章](docs/08-market-failures.md) | 市場の失敗と Forge の解決 | 情報の非対称性、外部性、独占、景気循環 |
+| [第9章](docs/09-actors.md) | 四つの経済主体 | 消費者・エージェント・プール・オーナー |
+| [第10章](docs/10-principles.md) | Forge 経済学の五つの原理 | 五原理の要約と相互関係 |
+
+### 付録
+
+| 付録 | タイトル | 内容 |
+|------|---------|------|
+| [付録A](docs/appendix-glossary.md) | 用語対応表 | 従来の経済学用語 → Forge 対応概念（約30項目） |
+| [付録B](docs/appendix-bibliography.md) | 参考文献の系譜 | スミスからピケティまでの知的系譜 |
+
+### 原典
+
+| ドキュメント | 内容 |
+|-------------|------|
+| [Forge 経済学仕様書](spec/forge-economics-spec.md) | 凍結された v0.1 仕様書（docs/ の各章はここから展開） |
+
+## 読書ガイド
+
+### はじめての方
+
+1. まずこの README の「30 秒でわかる Forge 経済」と「従来の経済学との対応」を読む
+2. [序章](docs/00-introduction.md) で全体像をつかむ
+3. [第1章](docs/01-value.md) → [第2章](docs/02-money.md) → [第3章](docs/03-supply-demand.md) と順に読む
+4. 用語がわからなくなったら [付録A：用語対応表](docs/appendix-glossary.md) を参照
+
+### 経済学を知っている方
+
+1. [第10章：五つの原理](docs/10-principles.md) で Forge 経済の全体像を把握する
+2. [付録A：用語対応表](docs/appendix-glossary.md) で従来の用語との対応を確認する
+3. 興味のある章を個別に読む
+
+### Forge の開発者
+
+1. [第9章：四つの経済主体](docs/09-actors.md) でアーキテクチャの経済的根拠を理解する
+2. [第5章：銀行と信用](docs/05-banking.md) でサーキットブレーカーの設計思想を確認する
+3. [原典の仕様書](spec/forge-economics-spec.md) で正確な数値・パラメータを参照する
+
+## 関連リポジトリ
+
+| リポジトリ | 役割 |
+|-----------|------|
+| [forge](https://github.com/clearclown/forge) | プロトコル実装（Rust） |
+| [forge-mesh](https://github.com/nm-arealnormalman/mesh-llm) | 分散推論ランタイム |
+| forge-economics（ここ） | 経済理論と教育ドキュメント |
+
+## ライセンス
 
 MIT
