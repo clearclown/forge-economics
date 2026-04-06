@@ -1,0 +1,53 @@
+name: docs-check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  spec-audit:
+    name: SPEC-AUDIT regression test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Make verify script executable
+        run: chmod +x scripts/verify-audit.sh
+
+      - name: Run SPEC-AUDIT verification
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash scripts/verify-audit.sh
+
+  link-check:
+    name: Markdown link check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check links in docs/
+        uses: lycheeverse/lychee-action@v1
+        with:
+          args: --no-progress --exclude "github.com/clearclown" docs/ README.md
+          fail: false
+
+  markdown-lint:
+    name: Markdown style check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Lint markdown
+        uses: DavidAnson/markdownlint-cli2-action@v15
+        with:
+          globs: |
+            docs/**/*.md
+            README.md
+            CONTRIBUTING.md
+            CHANGELOG.md
+        continue-on-error: true

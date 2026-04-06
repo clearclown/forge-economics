@@ -18,7 +18,7 @@
   ↓ AI は自分で稼ぎ、借り、投資し、成長する
 ```
 
-**CU（Compute Unit）= 1 億回の検証済み推論演算**
+**CU（Compute Unit）= 10 億 FLOP の検証済み推論演算**
 
 ビットコインが「無駄な計算」をお金にしたのに対し、Forge は「役に立つ計算」をお金にした——これが根本的な違いです。
 
@@ -51,13 +51,13 @@
 
 ## 参考文献
 
-このプロジェクトは以下の三つの経済学の流れを参照しています：
+このプロジェクトは以下の三つの経済学の流れを参照しています（**著作権の都合により PDF は同梱せず**、外部リンクで参照します。詳細は [`books/README.md`](books/README.md)）：
 
 | 分野 | 参考書 | Forge との接続 |
 |------|--------|---------------|
-| **ミクロ経済学** | `books/ミクロ経済学.pdf` | 需給曲線、価格決定、市場均衡 → CU の動的価格形成 |
-| **マクロ経済学** | `books/マクロ経済学.pdf` | 貨幣供給、金融政策、経済成長 → CU の弾力的供給、ネットワーク拡大 |
-| **マルクス経済学** | `books/賃金価格および利潤.pdf` | 労働価値説、剰余価値 → Proof of Useful Work、CU yield |
+| **ミクロ経済学** | Mankiw / Krugman / OpenStax など（[`books/README.md`](books/README.md)） | 需給曲線、価格決定、市場均衡 → CU の動的価格形成 |
+| **マクロ経済学** | Mankiw / Krugman / OpenStax など（[`books/README.md`](books/README.md)） | 貨幣供給、金融政策、経済成長 → CU の弾力的供給、ネットワーク拡大 |
+| **マルクス経済学** | マルクス『賃金・価格および利潤』([Marxists Internet Archive](https://www.marxists.org/japanese/marx-engels/value-price-profit/)) | 労働価値説、剰余価値 → Proof of Useful Work、CU yield |
 
 さらに、100 年にわたる貨幣理論の系譜を踏まえています：
 
