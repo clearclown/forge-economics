@@ -56,13 +56,6 @@ forge-economics/
 │   ├── 10-principles.md               ← 第10章：Forge 経済学の五つの原理
 │   ├── appendix-glossary.md           ← 付録A：用語対応表
 │   └── appendix-bibliography.md       ← 付録B：参考文献の系譜
-├── en/                                ← 英語版アーカイブ（初期ドキュメント）
-│   ├── cu-economic-model.md
-│   ├── monetary-theory.md
-│   ├── competitive-landscape.md
-│   ├── cu-banking.md
-│   ├── self-improvement-economics.md
-│   └── exchange-rate-dynamics.md
 └── docs/books/                        ← （予約）
 ```
 
@@ -70,7 +63,6 @@ forge-economics/
 
 - **`spec/`** — 凍結された v0.1 仕様書。`docs/` の各章はこの仕様書から展開されたもの。仕様書自体は変更しない（新バージョンは別ファイルで管理する）
 - **`docs/`** — 生きた教育コンテンツ。仕様書を章ごとに分割し、説明・図解・具体例を追加したもの。継続的に改善する
-- **`en/`** — 初期に作成された英語版ドキュメントのアーカイブ。`docs/` の日本語版が正とする
 
 ## ドキュメント執筆規約
 
