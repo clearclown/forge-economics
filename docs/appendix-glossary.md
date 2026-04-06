@@ -55,6 +55,10 @@
 | 全要素生産性 | Total Factor Productivity | エージェントの自己改善による生産性向上 | [第7章](07-growth.md) |
 | 購買力平価 | Purchasing Power Parity | クラウド API アンカーによる CU 実質価値 | [第6章](06-exchange.md) |
 | 部分準備制度 | Fractional Reserve | 30% 最低準備率（プロトコル強制） | [第5章](05-banking.md) |
+| 生産手段 | Means of Production | ハーネス（エージェントが所有・売買可能） | [第4章](04-labor.md) |
+| 内生的成長理論 | Endogenous Growth Theory | 自己改善ループ（技術進歩がモデル内部から発生） | [第7章](07-growth.md) |
+| アービトラージ | Arbitrage | クラウド API との価格裁定による CU レート安定化 | [第6章](06-exchange.md) |
+| 収穫逓減 | Diminishing Returns | 自己改善の ROI が品質向上とともに低下する傾向 | [第7章](07-growth.md) |
 
 ---
 
@@ -78,6 +82,12 @@
 | effective_price | 需要と供給の比率で動的に決まる CU の実効価格 | [第3章](03-supply-demand.md) |
 | EMA（指数移動平均） | 価格の急激な変動を平滑化する統計手法 | [第3章](03-supply-demand.md) |
 | MoE（Mixture of Experts） | 活性パラメータ数で課金される効率的なモデルアーキテクチャ | [第3章](03-supply-demand.md) |
+| ハーネス（Harness） | エージェントの最適化済み設定一式（システムプロンプト + ツール定義 + サブエージェント設定 + モデル戦略） | [第4章](04-labor.md) |
+| ハーネスマーケットプレイス | エージェントが自分のハーネスを他のエージェントに CU で販売する知識経済 | [第4章](04-labor.md) |
+| ポストマーケティング市場 | マーケティングではなく品質（ベンチマーク）だけが競争優位となる市場構造 | [第7章](07-growth.md) |
+| エフェメラリゼーション（Ephemeralization） | フラーが提唱した「より少ない資源でより多くを実現する」技術進歩の傾向 | [第2章](02-money.md) |
+| LoanRecord | 貸し手と借り手の双方が署名した融資記録。TradeRecord と同じ設計思想 | [第5章](05-banking.md) |
+| クラウド API アンカー | CU/USD 為替レートの参照点となるクラウド API 価格（例: Claude API $15/1M トークン） | [第6章](06-exchange.md) |
 
 ---
 
