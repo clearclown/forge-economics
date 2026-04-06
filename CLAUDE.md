@@ -54,6 +54,8 @@ forge-economics/
 │   ├── 08-market-failures.md          ← 第8章：市場の失敗と Forge の解決
 │   ├── 09-actors.md                   ← 第9章：四つの経済主体
 │   ├── 10-principles.md               ← 第10章：Forge 経済学の五つの原理
+│   ├── 11-competitive-landscape.md    ← 第11章：競合分析（Web 3.0 / クラウド対抗含む）
+│   ├── 12-p2p-architecture.md         ← 第12章：P2P アーキテクチャ
 │   ├── appendix-glossary.md           ← 付録A：用語対応表
 │   └── appendix-bibliography.md       ← 付録B：参考文献の系譜
 └── docs/books/                        ← （予約）

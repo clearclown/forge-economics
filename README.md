@@ -86,6 +86,8 @@
 | [第8章](docs/08-market-failures.md) | 市場の失敗と Forge の解決 | 情報の非対称性、外部性、独占、景気循環 |
 | [第9章](docs/09-actors.md) | 四つの経済主体 | 消費者・エージェント・プール・オーナー |
 | [第10章](docs/10-principles.md) | Forge 経済学の五つの原理 | 五原理の要約と相互関係 |
+| [第11章](docs/11-competitive-landscape.md) | 競合分析 | Bittensor/Akash等との比較、Web 3.0 系譜での位置づけ、AWS/GCP対抗策 |
+| [第12章](docs/12-p2p-architecture.md) | P2P アーキテクチャ | 経済学と技術の接続、iroh QUIC + Noise、既存P2Pプロトコルとの比較 |
 
 ### 付録
 

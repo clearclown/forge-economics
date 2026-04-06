@@ -91,4 +91,4 @@
 
 ---
 
-← [第11章：競合分析](11-competitive-landscape.md) | [目次](../README.md) | [付録B：参考文献の系譜](appendix-bibliography.md) →
+← [第12章：P2P アーキテクチャ](12-p2p-architecture.md) | [目次](../README.md) | [付録B：参考文献の系譜](appendix-bibliography.md) →
