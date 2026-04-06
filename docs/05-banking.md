@@ -630,4 +630,23 @@ Forge のレンディングプールは、以下の点で異なります。
 
 ---
 
+## 実装参照
+
+この章で説明したレンディングプールとサーキットブレーカーは、`forge` リポジトリの以下のクレートで実装される予定です：
+
+| 概念 | Rust ファイル | 説明 |
+|------|-------------|------|
+| LoanRecord (planned) | [`forge-ledger/src/ledger.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-ledger/src/ledger.rs) | 貸し手・借り手の双方署名付き融資記録 (Issue #32 forge本体) |
+| KillSwitch | [`forge-ledger/src/safety.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-ledger/src/safety.rs) | 全取引を凍結する人間用の緊急スイッチ |
+| BudgetPolicy | [`forge-ledger/src/safety.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-ledger/src/safety.rs) | エージェントごとの予算上限 |
+| CircuitState | [`forge-ledger/src/safety.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-ledger/src/safety.rs) | 異常検出時に取引を一時停止する回路遮断器 |
+| VelocityWindow | [`forge-ledger/src/safety.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-ledger/src/safety.rs) | 速度監視ウィンドウ (1 分間スライディング) |
+| /v1/forge/safety API | [`forge-node/src/api.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-node/src/api.rs) | 安全状態の HTTP エンドポイント |
+
+レンディング関連の API (`/v1/forge/lend`, `/borrow`, `/repay`, `/credit`, `/pool`, `/loans`) は forge 本体の Issue #32-#36 で実装予定です。
+
+数値定数 (LTV, 準備率, 信用スコア等) は [`spec/parameters.md`](../spec/parameters.md) を参照。
+
+---
+
 ← [第4章：労働と剰余価値](04-labor.md) | [目次](../README.md) | [第6章：為替と二つの経済圏](06-exchange.md) →

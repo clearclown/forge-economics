@@ -960,4 +960,19 @@ Forge の CU/USD レートは、以下の点で根本的に異なります。
 
 ---
 
+## 実装参照
+
+この章で説明した CU ↔ BTC ブリッジは、`forge` リポジトリで以下のように実装されています：
+
+| 概念 | Rust ファイル | 説明 |
+|------|-------------|------|
+| Lightning Bridge | [`forge-lightning/src/payment.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-lightning/src/payment.rs) | BOLT11 Invoice 経由の CU/BTC 交換 |
+| /v1/forge/invoice API | [`forge-node/src/api.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-node/src/api.rs) | CU 残高から Lightning Invoice を作成 |
+| settlement export | [`forge-ledger/src/ledger.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-ledger/src/ledger.rs) | 期間内取引のサマリ生成 |
+| /settlement API | [`forge-node/src/api.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-node/src/api.rs) | エクスポート可能な決済明細 |
+
+クラウド API アンカー価格や物理的価格境界の参考値は [`spec/parameters.md`](../spec/parameters.md) を参照。
+
+---
+
 ← [第5章：銀行と信用](05-banking.md) | [目次](../README.md) | [第7章：経済成長と自己改善](07-growth.md) →

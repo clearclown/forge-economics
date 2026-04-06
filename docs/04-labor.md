@@ -591,4 +591,20 @@ Forge は、これらの問題に対して技術的な解答を与えます。
 
 ---
 
+## 実装参照
+
+この章で説明した Proof of Useful Work と双方署名の構造は、`forge` リポジトリで以下のように実装されています：
+
+| 概念 | Rust ファイル | 説明 |
+|------|-------------|------|
+| TradeRecord | [`forge-ledger/src/ledger.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-ledger/src/ledger.rs) | 提供者・消費者の取引記録 |
+| SignedTradeRecord | [`forge-ledger/src/ledger.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-ledger/src/ledger.rs) | Ed25519 双方署名付き取引記録 |
+| TradeProposal / TradeAccept | [`forge-proto/src/messages.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-proto/src/messages.rs) | ワイヤープロトコルの提案・承認メッセージ |
+| ComputeLedger::execute_signed_trade() | [`forge-ledger/src/ledger.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-ledger/src/ledger.rs) | 署名検証後に台帳に反映 |
+| reputation / yield 計算 | [`forge-ledger/src/ledger.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-ledger/src/ledger.rs) | 可用性 yield と評判の更新 |
+
+数値定数 (yield rate, 信用スコア重み等) は [`spec/parameters.md`](../spec/parameters.md) を参照。
+
+---
+
 ← [第3章：需要と供給](03-supply-demand.md) | [目次](../README.md) | [第5章：銀行と信用](05-banking.md) →

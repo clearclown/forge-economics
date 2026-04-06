@@ -695,4 +695,19 @@ CU の基本価格はすべての推論で同じではありません。
 
 ---
 
+## 実装参照
+
+この章で説明した動的価格メカニズムは、`forge` リポジトリで以下のように実装されています：
+
+| 概念 | Rust ファイル | 説明 |
+|------|-------------|------|
+| MarketPrice | [`forge-ledger/src/ledger.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-ledger/src/ledger.rs) | EMA 平滑化された動的 CU 価格 |
+| effective_cu_per_token() | [`forge-ledger/src/ledger.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-ledger/src/ledger.rs) | demand_factor / supply_factor で実効価格を計算 |
+| estimate_cost() | [`forge-ledger/src/ledger.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-ledger/src/ledger.rs) | トークン数 × 実効価格でコスト見積もり |
+| /v1/forge/pricing API | [`forge-node/src/api.rs`](https://github.com/clearclown/forge/blob/main/crates/forge-node/src/api.rs) | 現在の市場価格を返す HTTP エンドポイント |
+
+数値定数 (model tier 別の base CU/token, EMA half-life 等) は [`spec/parameters.md`](../spec/parameters.md) を参照。
+
+---
+
 ← [第2章：貨幣とは何か](02-money.md) | [目次](../README.md) | [第4章：労働と剰余価値](04-labor.md) →
