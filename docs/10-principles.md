@@ -4,6 +4,21 @@
 
 ---
 
+## 目次
+
+- [はじめに](#はじめに)
+- [原理 1: 有用な計算は通貨である（Computation is Currency）](#原理-1-有用な計算は通貨であるcomputation-is-currency)
+- [原理 2: 取引は双方向的である（Trades are Bilateral）](#原理-2-取引は双方向的であるtrades-are-bilateral)
+- [原理 3: 供給は物理法則に従う（Supply Follows Physics）](#原理-3-供給は物理法則に従うsupply-follows-physics)
+- [原理 4: AI エージェントは完全な経済主体である（Agents are Full Actors）](#原理-4-ai-エージェントは完全な経済主体であるagents-are-full-actors)
+- [原理 5: 安全性は設計に埋め込まれる（Safety by Design）](#原理-5-安全性は設計に埋め込まれるsafety-by-design)
+- [五つの原理の関係](#五つの原理の関係)
+- [従来の経済学の仮定との対比](#従来の経済学の仮定との対比)
+- [この章のまとめ](#この章のまとめ)
+- [原理が破れるとき](#原理が破れるとき)
+
+---
+
 ## はじめに
 
 第1章から第9章まで、従来の経済学の概念を一つずつ Forge に写像してきました。この章では、それらを貫く五つの原理を整理します。
