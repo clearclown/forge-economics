@@ -1,6 +1,6 @@
 # 参考文献（books/）
 
-このフォルダは、当初 Forge Economics が参照する三つの経済学書の PDF を格納する予定でした：
+このフォルダは、当初 Tirami Economics が参照する三つの経済学書の PDF を格納する予定でした：
 
 - `ミクロ経済学.pdf`
 - `マクロ経済学.pdf`
@@ -19,7 +19,7 @@
   - 有料教科書: [Mankiw, *Principles of Microeconomics*（Cengage）](https://www.cengage.com/c/principles-of-microeconomics-9e-mankiw/)
   - 無料オープン教科書: [OpenStax *Principles of Microeconomics 3e*](https://openstax.org/details/books/principles-microeconomics-3e)
   - 無料講義動画: [Khan Academy — Microeconomics](https://www.khanacademy.org/economics-finance-domain/microeconomics)
-- **Forge との接続点**: 需給曲線・価格決定・市場均衡 → CU の動的価格形成（第3章）
+- **Tirami との接続点**: 需給曲線・価格決定・市場均衡 → TRM の動的価格形成（第3章）
 
 ### マクロ経済学 (Macroeconomics)
 
@@ -30,7 +30,7 @@
   - 有料教科書: [Mankiw, *Principles of Macroeconomics*（Cengage）](https://www.cengage.com/c/principles-of-macroeconomics-10e-mankiw/)
   - 無料オープン教科書: [OpenStax *Principles of Macroeconomics 3e*](https://openstax.org/details/books/principles-macroeconomics-3e)
   - 無料講義動画: [Khan Academy — Macroeconomics](https://www.khanacademy.org/economics-finance-domain/macroeconomics)
-- **Forge との接続点**: 貨幣供給・金融政策・経済成長 → CU の弾力的供給とネットワーク拡大（第2章、第7章）
+- **Tirami との接続点**: 貨幣供給・金融政策・経済成長 → TRM の弾力的供給とネットワーク拡大（第2章、第7章）
 
 ### マルクス『賃金・価格および利潤』 (Value, Price and Profit)
 
@@ -40,7 +40,7 @@
 - **参照リンク**:
   - 日本語全文（パブリックドメイン）: [Marxists Internet Archive — 賃金・価格および利潤](https://www.marxists.org/japanese/marx-engels/value-price-profit/)
   - 英語原文: [Marxists Internet Archive — *Value, Price and Profit*](https://www.marxists.org/archive/marx/works/1865/value-price-profit/)
-- **Forge との接続点**: 労働価値説・剰余価値 → Proof of Useful Work・CU yield（第1章、第4章）
+- **Tirami との接続点**: 労働価値説・剰余価値 → Proof of Useful Work・TRM yield（第1章、第4章）
 
 ## 入手のガイドライン
 
@@ -50,4 +50,4 @@
 
 ## このリポジトリの方針
 
-Forge Economics は**オープンで引用可能な知識**を前提に構築されています。PDF の同梱は法的リスクを伴うため、外部参照リンクによって読者を一次資料に導く方式を採用しました。リンク切れを発見した場合は Issue を立ててください。
+Tirami Economics は**オープンで引用可能な知識**を前提に構築されています。PDF の同梱は法的リスクを伴うため、外部参照リンクによって読者を一次資料に導く方式を採用しました。リンク切れを発見した場合は Issue を立ててください。

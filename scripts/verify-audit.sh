@@ -20,7 +20,7 @@ assert() {
 }
 
 # === Critical (3) ===
-assert "C-1" "README CU定義が10億FLOPに修正済み (issue #24)" \
+assert "C-1" "README TRM定義が10億FLOPに修正済み (issue #24)" \
   "! grep -q '1 億回' README.md && grep -q '10 億 FLOP' README.md"
 
 assert "C-2" "books/ フォルダが存在 (issue #25)" \
@@ -44,7 +44,7 @@ assert "H-5" "CLAUDE.md から 予約 ディレクトリ宣言が削除済み (i
 
 # === Medium (5) ===
 assert "M-1" "Chapter 13 で参照された Open Question Issues が GitHub に存在 (issue #31)" \
-  "gh issue list -R clearclown/forge-economics --state all --search 'Open Question' --json number | grep -q number"
+  "gh issue list -R clearclown/tirami-economics --state all --search 'Open Question' --json number | grep -q number"
 
 assert "M-3" "00-introduction.md の章マップに 12,13,14 が含まれる (issue #32)" \
   "grep -q '12-p2p-architecture' docs/00-introduction.md && grep -q '13-open-questions' docs/00-introduction.md && grep -q '14-programmable-money' docs/00-introduction.md"
@@ -56,7 +56,7 @@ assert "M-5" "CONTRIBUTING.md が存在 (issue #34)" \
   "test -f CONTRIBUTING.md"
 
 assert "M-6" "spec/parameters.md が存在し主要パラメータを含む (issue #35)" \
-  "test -f spec/parameters.md && grep -q '1,000 CU' spec/parameters.md && grep -q '30%' spec/parameters.md"
+  "test -f spec/parameters.md && grep -q '1,000 TRM' spec/parameters.md && grep -q '30%' spec/parameters.md"
 
 # === Low (4) ===
 assert "L-1" "docs/en/ スケルトンが存在 (issue #36)" \
@@ -68,8 +68,8 @@ assert "L-2" "CI ワークフローが存在 (issue #37)" \
 assert "L-3" "全章に章内ToCが存在 (issue #38)" \
   "grep -q '^## 目次' docs/00-introduction.md && grep -q '^## 目次' docs/01-value.md && grep -q '^## 目次' docs/02-money.md && grep -q '^## 目次' docs/05-banking.md"
 
-assert "L-6" "主要章に forge 本体への相互参照リンクが存在 (issue #39)" \
-  "grep -q 'github.com/clearclown/forge/blob' docs/05-banking.md && grep -q 'github.com/clearclown/forge/blob' docs/04-labor.md"
+assert "L-6" "主要章に tirami 本体への相互参照リンクが存在 (issue #39)" \
+  "grep -q 'github.com/clearclown/tirami/blob' docs/05-banking.md && grep -q 'github.com/clearclown/tirami/blob' docs/04-labor.md"
 
 # === Report ===
 echo ""

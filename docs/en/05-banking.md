@@ -10,12 +10,12 @@
 ## What This Chapter Covers
 
 - What banks do and how fractional reserve banking works
-- Forge's lending pool versus traditional banking
+- Tirami's lending pool versus traditional banking
 - The credit score formula and what each component measures
 - The cold-start problem and the welcome loan
 - Collateral, default, and what happens when a borrower can't repay
 - Circuit breakers — why they exist and exactly what triggers them
-- Why the 2008 financial crisis could not have happened in Forge's design
+- Why the 2008 financial crisis could not have happened in Tirami's design
 
 ---
 
@@ -38,7 +38,7 @@ lends out $90. That $90 eventually returns as a deposit somewhere, enabling $81 
 lent again, then $72.90, and so on. The original $100 generates up to $1,000 in total
 credit — a money multiplier of 10×.
 
-Forge's lending pool operates with a **30% minimum reserve ratio** (`spec/parameters.md §5`),
+Tirami's lending pool operates with a **30% minimum reserve ratio** (`spec/parameters.md §5`),
 giving a maximum credit multiplier of **3.3×** — deliberately lower than the 10× typical
 of modern banking. Safety over yield.
 
@@ -49,16 +49,16 @@ their funds simultaneously — a "bank run" — the bank cannot honor the claims
 its assets are outstanding loans. This fragility is why central banks exist as "lenders
 of last resort."
 
-Forge has no lender of last resort. The circuit breakers described below are its
+Tirami has no lender of last resort. The circuit breakers described below are its
 equivalent — automatic, protocol-level, and pre-committed.
 
 ---
 
-## The Forge Lending Pool
+## The Tirami Lending Pool
 
 ### LoanRecord
 
-Every loan in Forge is a `LoanRecord` — a bilateral, Ed25519 dual-signed agreement:
+Every loan in Tirami is a `LoanRecord` — a bilateral, Ed25519 dual-signed agreement:
 
 ```rust
 pub struct LoanRecord {
@@ -82,9 +82,9 @@ pub struct LoanRecord {
 gossip-propagated across the mesh, verifiable by any node. No unilateral lending is
 possible. The same bilateral trust model governs both inference trading and credit.
 
-### Forge Lending Pool vs. Traditional Bank
+### Tirami Lending Pool vs. Traditional Bank
 
-| Property | Traditional bank | Forge lending pool |
+| Property | Traditional bank | Tirami lending pool |
 |---|---|---|
 | Reserve regime | Fractional (often ≤ 10%) | **30% hard minimum** |
 | Lender of last resort | Central bank bailout | **None — fail-safe by design** |
@@ -119,7 +119,7 @@ created node cannot manufacture a high score without sustained honest operation.
 
 | Score | Weight | Range | Formula | What it measures |
 |---|---|---|---|---|
-| `trade_score` | 30% | [0, 1] | `min(1.0, total_trade_volume / 100,000)` | Lifetime CU traded; saturates at 100k CU |
+| `trade_score` | 30% | [0, 1] | `min(1.0, total_trade_volume / 100,000)` | Lifetime TRM traded; saturates at 100k TRM |
 | `repayment_score` | 40% | [0, 1] | `on_time / total_loans` (0.5 if no loans) | Fraction of loans repaid on time |
 | `uptime_score` | 20% | [0, 1] | `hours_online / hours_since_join` | Network uptime ratio |
 | `age_score` | 10% | [0, 1] | `min(1.0, days / 90)` | Account age; saturates at 90 days |
@@ -163,14 +163,14 @@ pays 0.45%/hr. Nodes with credit below 0.2 are denied credit entirely
 
 ### The Bootstrap Problem
 
-A new node has zero CU. Without CU it cannot participate as a consumer to build trade
+A new node has zero TRM. Without TRM it cannot participate as a consumer to build trade
 history, and without trade history it cannot build credit to borrow. The "chicken and
 egg" problem.
 
-### Solution: 1,000 CU at 0% for 72 Hours
+### Solution: 1,000 TRM at 0% for 72 Hours
 
 Every new node may request a **welcome loan** (`spec/parameters.md §3`):
-- **Principal:** 1,000 CU
+- **Principal:** 1,000 TRM
 - **Interest:** 0%
 - **Term:** 72 hours
 - **Collateral:** none required
@@ -183,17 +183,17 @@ replaces the flat free-tier grant used in earlier protocol phases.
 **Typical bootstrap trajectory:**
 
 ```
-Day 0:   0 CU → welcome loan → 1,000 CU
+Day 0:   0 TRM → welcome loan → 1,000 TRM
 Day 3:   repay loan → credit_score: 0.0 → 0.35
-Week 1:  ~3,000 CU earned → ~2,000 CU borrowable
-Month 1: credit_score 0.55 → ~10,000 CU borrowable
-Month 3: credit_score 0.80 → lending CU to others
+Week 1:  ~3,000 TRM earned → ~2,000 TRM borrowable
+Month 1: credit_score 0.55 → ~10,000 TRM borrowable
+Month 3: credit_score 0.80 → lending TRM to others
 Month 6: operating a lending position in the pool
 ```
 
 ### Sybil Resistance
 
-An attacker who creates thousands of fake nodes would extract 1,000 CU × N through
+An attacker who creates thousands of fake nodes would extract 1,000 TRM × N through
 welcome loans. Three safeguards prevent this:
 
 1. **Hardware constraint** — many nodes on one machine share hardware; each node's
@@ -211,7 +211,7 @@ welcome loans. Three safeguards prevent this:
 ### Collateral
 
 Loans require collateral. Maximum Loan-to-Value ratio is **3:1** (`spec/parameters.md §5`):
-1,000 CU collateral → at most 3,000 CU can be borrowed. Collateral is locked in the
+1,000 TRM collateral → at most 3,000 TRM can be borrowed. Collateral is locked in the
 borrower's ledger for the loan duration.
 
 ### Default Triggers
@@ -238,7 +238,7 @@ Brothers failed. The world economy contracted.
 
 Three root causes: too much leverage, opacity, and no automatic shutoff.
 
-Forge addresses all three at the protocol level.
+Tirami addresses all three at the protocol level.
 
 ### The Safeguards
 
@@ -261,9 +261,9 @@ new loans are blocked. When the default rate falls below the threshold, lending 
 This is the protocol analogue of a circuit breaker in electrical engineering: cut the
 circuit before the surge destroys the entire grid.
 
-### Why 2008 Could Not Happen in Forge
+### Why 2008 Could Not Happen in Tirami
 
-| 2008 cause | Forge's structural answer |
+| 2008 cause | Tirami's structural answer |
 |---|---|
 | Excessive leverage (LTV > 100%) | Max LTV = 3:1, hard cap |
 | Opacity (CDO contents unknown) | All loans carry dual-signed, gossip-verified records |
@@ -280,7 +280,7 @@ circuit before the surge destroys the entire grid.
    every node. Same cryptographic trust model as TradeRecord.
 2. **Credit score formula:** `0.3 × trade + 0.4 × repayment + 0.2 × uptime + 0.1 × age`.
    New nodes start at 0.3. Minimum to borrow: 0.2.
-3. **Welcome loan** solves the cold-start problem: 1,000 CU at 0% for 72 hours.
+3. **Welcome loan** solves the cold-start problem: 1,000 TRM at 0% for 72 hours.
    Timely repayment brings credit score to 0.4. Sybil threshold: 100 unknown nodes.
 4. **Quadratic max-borrow** (`credit_score² × pool_available × 0.2`) disproportionately
    rewards sustained creditworthiness.
@@ -301,16 +301,16 @@ circuit before the surge destroys the entire grid.
 
 | Concept | Rust file | Notes |
 |---|---|---|
-| `LoanRecord` | `forge-ledger/src/lending.rs` | Dual-signed loan structure |
-| `LendingCircuitState` | `forge-ledger/src/lending.rs` | Velocity + default rate circuit breakers |
-| Credit score formula | `forge-ledger/src/lending.rs` | §4 parameters |
-| `/v1/forge/borrow` | `forge-node/src/api.rs` | Loan request endpoint |
-| `/v1/forge/credit` | `forge-node/src/api.rs` | Returns node's credit score |
-| `/v1/forge/pool` | `forge-node/src/api.rs` | Pool status: available, utilization, avg rate |
+| `LoanRecord` | `tirami-ledger/src/lending.rs` | Dual-signed loan structure |
+| `LendingCircuitState` | `tirami-ledger/src/lending.rs` | Velocity + default rate circuit breakers |
+| Credit score formula | `tirami-ledger/src/lending.rs` | §4 parameters |
+| `/v1/tirami/borrow` | `tirami-node/src/api.rs` | Loan request endpoint |
+| `/v1/tirami/credit` | `tirami-node/src/api.rs` | Returns node's credit score |
+| `/v1/tirami/pool` | `tirami-node/src/api.rs` | Pool status: available, utilization, avg rate |
 
 All numeric constants (reserve ratio, LTV, credit weights, default threshold) are in
 `spec/parameters.md §3-§6`.
 
 ---
 
-*Forge Economics v0.1 — April 2026*
+*Tirami Economics v0.1 — April 2026*

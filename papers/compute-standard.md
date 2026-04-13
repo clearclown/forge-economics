@@ -4,7 +4,7 @@ authors:
   - name: clearclown
     affiliation: independent
   - name: contributors
-    affiliation: Forge Protocol
+    affiliation: Tirami Protocol
 date: 2026-04-09
 version: "v0.1 (preprint)"
 license: "MIT (text) / CC-BY-4.0 (figures)"
@@ -16,16 +16,16 @@ Contemporary AI service economies are structurally misaligned: the dominant mone
 mechanism — advertising and speculative token issuance — captures value from AI systems
 without any relationship to the physical cost of computation. This paper argues that
 compute is the genuinely scarce resource in AI-native economies, and that compute itself
-should therefore serve as the medium of exchange. We introduce the **Compute Unit (CU)**,
+should therefore serve as the medium of exchange. We introduce the **Compute Unit (TRM)**,
 defined as $10^{10}$ floating-point operations of verified, useful inference, and describe
-the **Forge protocol** — a five-layer Rust implementation of a CU-native economy for
-autonomous AI agents. Forge's economic layer provides a deflationary, earnable-only,
+the **Tirami protocol** — a five-layer Rust implementation of a TRM-native economy for
+autonomous AI agents. Tirami's economic layer provides a deflationary, earnable-only,
 non-speculative currency anchored in thermodynamic reality via Ed25519 dual-signed
 Proof of Useful Work. The system implements dynamic market pricing with exponential
 moving average smoothing ($\alpha = 0.3$), a credit-scoring lending subsystem (credit
 score = $0.3 \times \text{trade} + 0.4 \times \text{repayment} + 0.2 \times \text{uptime} + 0.1 \times \text{age}$),
 collusion-resistant reputation gossip, and an autonomous self-improvement loop in which
-AI agents invest earned CU to improve their own inference quality. A theory-to-implementation
+AI agents invest earned TRM to improve their own inference quality. A theory-to-implementation
 audit confirms 43 parameter matches against the canonical specification with zero drift.
 Across 1,021 passing tests in four repositories, we demonstrate that autonomous AI agents
 can self-fund, self-improve, and transact without fiat currency, speculative tokens, or
@@ -64,12 +64,12 @@ beyond demonstrating that energy was expended. Frederic Soddy, writing in 1926 [
 described this as "virtual wealth": financial value detached from physical productive
 capacity. Bitcoin is digital gold with Soddy's critique intact.
 
-The Compute Standard proposed here is categorically different. A CU is defined not as
+The Compute Standard proposed here is categorically different. A TRM is defined not as
 the output of an arbitrary hash function but as $10^{10}$ FLOPs of *useful* inference
 — computation that produced a result that a counterparty requested and dual-signed as
 received. The monetary unit is therefore the productive act itself, not a side-effect
 of it. This distinction — useful computation versus waste computation as monetary proof
-— is the core theoretical contribution of Forge and places CU in a lineage traced
+— is the core theoretical contribution of Tirami and places TRM in a lineage traced
 through Soddy (1926), Fuller (1968), and Nakamoto (2008) [7, 8, 1] that reaches its
 completion only when the computation is both scarce and useful.
 
@@ -83,13 +83,13 @@ This paper makes the following contributions:
    inference substrate through agent marketplace (Section 3).
 3. **Dynamic pricing model** with supply-demand adjustment and multi-tier pricing
    (Section 4).
-4. **CU lending subsystem** with credit scoring, pool constraints, and circuit breakers
+4. **TRM lending subsystem** with credit scoring, pool constraints, and circuit breakers
    (Section 5).
 5. **Reputation consensus protocol** with collusion detection (Section 6).
-6. **Autonomous self-improvement loop** where agents invest earned CU in their own
+6. **Autonomous self-improvement loop** where agents invest earned TRM in their own
    capability improvement (Section 7).
 7. **Financial instrument layer** providing strategies, futures, insurance, and
-   risk-model VaR for CU portfolios (Section 8).
+   risk-model VaR for TRM portfolios (Section 8).
 8. **Post-marketing discovery** via reputation-scored capability matching and NIP-90
    integration (Section 9).
 9. **Empirical results** from 1,021 passing tests across the five-layer Rust
@@ -101,31 +101,31 @@ Sections 11-13 cover related work, limitations, and conclusion.
 
 # 2. The Compute Unit
 
-## 2.1 Definition: 1 CU = $10^{10}$ FLOPs of Verified Inference
+## 2.1 Definition: 1 TRM = $10^{10}$ FLOPs of Verified Inference
 
 A Compute Unit is defined as $10^{10}$ floating-point operations of verified AI
 inference, as specified in the canonical parameter reference [5, §1]:
 
-$$\text{1 CU} = 10^{10} \text{ FLOPs of useful inference}$$
+$$\text{1 TRM} = 10^{10} \text{ FLOPs of useful inference}$$
 
-The word *useful* is load-bearing. A CU is not created by arbitrary computation;
+The word *useful* is load-bearing. A TRM is not created by arbitrary computation;
 it is created by computation that satisfies a demand — an inference request that a
 consumer node submitted, a provider node fulfilled, and both parties Ed25519-signed
-as a `TradeRecord` in the Forge ledger. The dual signature is what distinguishes
+as a `TradeRecord` in the Tirami ledger. The dual signature is what distinguishes
 Proof of Useful Work from Proof of Work: it cryptographically encodes the bilateral
 nature of the value exchange.
 
-This definition anchors CU in physical reality via Landauer's principle [2]: information
+This definition anchors TRM in physical reality via Landauer's principle [2]: information
 processing requires irreversible energy expenditure of at least $kT \ln 2$ per bit
 erased. The energy cost of inference is not optional or contractual — it is thermodynamic.
-A CU therefore represents a specific, irreversible expenditure of physical energy in
+A TRM therefore represents a specific, irreversible expenditure of physical energy in
 service of a specific productive output. It cannot be manufactured from nothing, and it
 cannot be manufactured in excess of the network's physical compute capacity.
 
 ## 2.2 Why FLOPs Instead of Tokens
 
-The natural unit for metering AI inference is the output token, and Forge uses tokens
-for pricing (see Section 4.2). However, CU is defined in FLOPs rather than tokens for
+The natural unit for metering AI inference is the output token, and Tirami uses tokens
+for pricing (see Section 4.2). However, TRM is defined in FLOPs rather than tokens for
 three reasons. First, FLOPs are hardware-independent: a token generated by a 70B-parameter
 model requires an order of magnitude more computation than a token from a 1B-parameter
 model. Pricing by token alone conflates goods of different computational cost. Second,
@@ -133,23 +133,23 @@ FLOPs are latency-independent: batch inference, streaming, and speculative decod
 produce tokens at different rates but the same computational cost per token at a given
 model size. Third, FLOPs provide a physical lower bound on energy expenditure that tokens
 alone cannot. The multi-tier pricing structure (Section 4.2) bridges the two units by
-mapping model size tiers to CU-per-token rates.
+mapping model size tiers to TRM-per-token rates.
 
 ## 2.3 Atomic Properties: Fungible, Non-Speculative, Earnable-Only
 
-CU has three atomic properties that distinguish it from all prior AI compute tokens:
+TRM has three atomic properties that distinguish it from all prior AI compute tokens:
 
-**Fungibility.** All CU is identical. 1 CU earned by running Llama on a Mac Mini is
-identical to 1 CU earned by running DeepSeek on a data center GPU. The currency is not
+**Fungibility.** All TRM is identical. 1 TRM earned by running Llama on a Mac Mini is
+identical to 1 TRM earned by running DeepSeek on a data center GPU. The currency is not
 the hardware; it is the verified useful work.
 
-**Non-speculativity.** CU is not listed on any exchange. It has no ticker symbol, no
-order book, and no fiat on-ramp in the core protocol. The only way to acquire CU is to
+**Non-speculativity.** TRM is not listed on any exchange. It has no ticker symbol, no
+order book, and no fiat on-ramp in the core protocol. The only way to acquire TRM is to
 perform useful inference (earn) or borrow from the lending pool (credit). This removes
 the speculative attack surface that afflicts every existing compute marketplace.
 
-**Earnable-only issuance.** New CU enters the economy through four controlled channels:
-inference trade settlement (transfers existing CU), welcome loans (credit creation with
+**Earnable-only issuance.** New TRM enters the economy through four controlled channels:
+inference trade settlement (transfers existing TRM), welcome loans (credit creation with
 Sybil resistance, see §3), availability yield ($0.1\%/\text{hr} \times \text{reputation}$,
 see §7 of [5]), and Bitcoin bridge deposits (external liquidity). There is no mining
 reward, no pre-mine, and no team allocation.
@@ -158,14 +158,14 @@ reward, no pre-mine, and no team allocation.
 
 # 3. Economic Architecture: Five Layers
 
-Forge is structured as five distinct protocol layers, each implemented as a separate
-Rust crate within the `clearclown/forge` workspace:
+Tirami is structured as five distinct protocol layers, each implemented as a separate
+Rust crate within the `clearclown/tirami` workspace:
 
 ```
-L4: Discovery     forge-agora    — Agent marketplace, reputation, NIP-90, A2A
-L3: Intelligence  forge-mind     — Autonomous self-improvement paid in CU
-L2: Finance       forge-bank     — Strategies, portfolios, futures, insurance
-L1: Economy       forge-ledger   — CU ledger, dual-signed trades, lending, pricing
+L4: Discovery     tirami-agora    — Agent marketplace, reputation, NIP-90, A2A
+L3: Intelligence  tirami-mind     — Autonomous self-improvement paid in TRM
+L2: Finance       tirami-bank     — Strategies, portfolios, futures, insurance
+L1: Economy       tirami-ledger   — TRM ledger, dual-signed trades, lending, pricing
 L0: Inference     mesh-llm       — Distributed LLM inference (nm-arealnormalman/mesh-llm)
 ```
 
@@ -174,55 +174,55 @@ L0: Inference     mesh-llm       — Distributed LLM inference (nm-arealnormalma
 The inference layer is provided by the `mesh-llm` fork maintained at
 `nm-arealnormalman/mesh-llm`. It handles iroh QUIC transport with Noise protocol
 encryption, llama.cpp backend loading, pipeline parallelism, and MoE expert sharding.
-Forge's contribution to this layer is the `/api/forge/*` economic endpoints ported into
-the mesh-llm production runtime, plus CU metering hooks in the inference pipeline.
+Tirami's contribution to this layer is the `/api/tirami/*` economic endpoints ported into
+the mesh-llm production runtime, plus TRM metering hooks in the inference pipeline.
 The mesh-llm fork carries 641 tests independently. The economic layer's protocol
-correctness is validated separately in the `clearclown/forge` workspace.
+correctness is validated separately in the `clearclown/tirami` workspace.
 
-## 3.2 L1 — CU Ledger, Dual-Signed Trades, Dynamic Pricing
+## 3.2 L1 — TRM Ledger, Dual-Signed Trades, Dynamic Pricing
 
-The economic engine is `forge-ledger`. Every inference request that completes
+The economic engine is `tirami-ledger`. Every inference request that completes
 successfully generates a `TradeRecord` carrying:
 
 - Provider `NodeId` (Ed25519 public key)
 - Consumer `NodeId`
-- CU amount transferred
+- TRM amount transferred
 - Token count
 - UNIX timestamp
 - Provider signature
 - Consumer signature
 
-The dual-signature requirement means no unilateral CU issuance is possible. Both
+The dual-signature requirement means no unilateral TRM issuance is possible. Both
 parties must sign for the trade to be accepted into the gossip mesh. HMAC-SHA256
 ledger integrity prevents retrospective tampering.
 
-## 3.3 L2 — Financial Instruments (forge-bank)
+## 3.3 L2 — Financial Instruments (tirami-bank)
 
-`forge-bank` implements a portfolio management layer with pluggable strategies
+`tirami-bank` implements a portfolio management layer with pluggable strategies
 (Conservative, Balanced, HighYield), futures contracts with zero-sum PnL guarantee,
 insurance policies, and a Value-at-Risk risk model with 99% confidence level. These
-instruments allow nodes with CU surplus to deploy it productively and nodes with CU
+instruments allow nodes with TRM surplus to deploy it productively and nodes with TRM
 deficit to hedge against adverse market conditions. All constants are sourced from
 the canonical parameter specification [5, §10].
 
-## 3.4 L3 — Autonomous Self-Improvement Paid in CU (forge-mind)
+## 3.4 L3 — Autonomous Self-Improvement Paid in TRM (tirami-mind)
 
-`forge-mind` implements an AutoAgent-style improvement loop in which a running
-`ForgeMindAgent` periodically invokes a `CuPaidOptimizer` — which submits real inference
+`tirami-mind` implements an AutoAgent-style improvement loop in which a running
+`TiramiMindAgent` periodically invokes a `CuPaidOptimizer` — which submits real inference
 requests to a frontier model provider, records the cost as a `TradeRecord` on the ledger,
-and applies the resulting improvement to its own system prompt. CU is therefore not only
+and applies the resulting improvement to its own system prompt. TRM is therefore not only
 the output of inference but the input to capability improvement. This closes the
 self-improvement loop without any external funding mechanism.
 
-## 3.5 L4 — Post-Marketing Discovery via Reputation Aggregation (forge-agora)
+## 3.5 L4 — Post-Marketing Discovery via Reputation Aggregation (tirami-agora)
 
-`forge-agora` provides an agent marketplace where capability matching replaces
+`tirami-agora` provides an agent marketplace where capability matching replaces
 advertising. Agents register their capabilities (model tier, domain, language, latency
 SLA) and the `CapabilityMatcher` ranks providers by composite score rather than by
 paid placement. Discovery is economically neutral — no agent can purchase a higher
 ranking. NIP-90 [9] Data Vending Machine events are published to Nostr relays via a
 WebSocket publisher, enabling discovery by Nostr-native agents without requiring
-Forge-specific client software.
+Tirami-specific client software.
 
 ---
 
@@ -248,9 +248,9 @@ mechanism [15] in protocol form.
 
 ## 4.2 Multi-Tier Pricing
 
-Model size determines the CU cost per output token [5, §2]:
+Model size determines the TRM cost per output token [5, §2]:
 
-| Tier     | Parameter Count   | CU/token | Example models         |
+| Tier     | Parameter Count   | TRM/token | Example models         |
 |----------|-------------------|----------|------------------------|
 | Small    | < 3B              | 1        | Qwen 2.5 0.5B          |
 | Medium   | 3B – 14B          | 3        | Qwen 3 8B              |
@@ -259,32 +259,32 @@ Model size determines the CU cost per output token [5, §2]:
 
 For Mixture-of-Experts (MoE) models, the active parameter count — not the total
 parameter count — determines the tier. A 30B-total / 3B-active MoE model is priced
-at the Medium rate (3 CU/token) because only 3B parameters are engaged per forward
+at the Medium rate (3 TRM/token) because only 3B parameters are engaged per forward
 pass. This pricing reflects the actual compute cost rather than the nominal model size.
 
 ## 4.3 Deflation as the Network Matures
 
 As hardware improves, the same physical energy produces more FLOPs per dollar. New
-nodes enter the network when the CU-per-dollar return exceeds their energy costs.
-Increased supply drives down the effective price per CU in USD terms. This is
-deflationary in the fiat-denominated sense, but not in the CU-denominated sense: 1 CU
+nodes enter the network when the TRM-per-dollar return exceeds their energy costs.
+Increased supply drives down the effective price per TRM in USD terms. This is
+deflationary in the fiat-denominated sense, but not in the TRM-denominated sense: 1 TRM
 always purchases the same quantity of verified useful inference. The deflationary
 pressure therefore benefits consumers (cheaper inference) without devaluing the
 medium of exchange itself.
 
 ## 4.4 Physical Bounds: $0.000001 Floor, $0.000132 Ceiling
 
-The equilibrium rate anchors CU to real-world cloud API pricing: Claude-class frontier
-inference at \$15/M tokens maps to approximately 4,000 CU/M tokens, yielding an
-equilibrium rate of approximately \$0.00375/CU [5, §8]. Physical bounds constrain the
+The equilibrium rate anchors TRM to real-world cloud API pricing: Claude-class frontier
+inference at \$15/M tokens maps to approximately 4,000 TRM/M tokens, yielding an
+equilibrium rate of approximately \$0.00375/TRM [5, §8]. Physical bounds constrain the
 range [5, §9]:
 
-$$\text{floor} \approx \$0.000001/\text{CU} \quad \text{(electricity cost lower bound)}$$
-$$\text{ceiling} \approx \$0.000132/\text{CU} \quad \text{(Mac Mini M4 self-hosting cost)}$$
+$$\text{floor} \approx \$0.000001/\text{TRM} \quad \text{(electricity cost lower bound)}$$
+$$\text{ceiling} \approx \$0.000132/\text{TRM} \quad \text{(Mac Mini M4 self-hosting cost)}$$
 
 A Mac Mini M4 (\$600) operating continuously at full utilization produces approximately
-5,000,000 CU/year [5, §9]. Above the ceiling price, it becomes cheaper to run
-self-hosted inference than to purchase CU from the network. This physical constraint
+5,000,000 TRM/year [5, §9]. Above the ceiling price, it becomes cheaper to run
+self-hosted inference than to purchase TRM from the network. This physical constraint
 prevents the kind of speculative price detachment that afflicts token-based compute
 markets.
 
@@ -294,7 +294,7 @@ markets.
 
 ## 5.1 Credit Score
 
-Every node in the Forge network carries a credit score computed from its observed
+Every node in the Tirami network carries a credit score computed from its observed
 history [5, §4]:
 
 $$\text{credit} = 0.3 \cdot s_{\text{trade}} + 0.4 \cdot s_{\text{repayment}} + 0.2 \cdot s_{\text{uptime}} + 0.1 \cdot s_{\text{age}}$$
@@ -310,10 +310,10 @@ required to borrow is 0.2, providing a floor that prevents purely extractive
 participation. Nodes that repay their welcome loan within the 72-hour term receive a
 +0.1 bonus, bringing their score to 0.4 — the target for a fully bootstrapped participant.
 
-## 5.2 Welcome Loan: 1,000 CU, 0% Interest, 72 Hours, Sybil Threshold 100
+## 5.2 Welcome Loan: 1,000 TRM, 0% Interest, 72 Hours, Sybil Threshold 100
 
 The primary cold-start mechanism is the welcome loan [5, §3]: every new node may
-request a loan of 1,000 CU at 0% interest with a 72-hour repayment term. This
+request a loan of 1,000 TRM at 0% interest with a 72-hour repayment term. This
 replaces the flat free-tier grant used in earlier phases and creates a credit relationship
 rather than a gift — establishing the borrower's first repayment record and
 incentivizing timely repayment via the credit score bonus.
@@ -321,13 +321,13 @@ incentivizing timely repayment via the credit score bonus.
 Sybil resistance is enforced by a network-wide threshold: if the number of unknown
 (unverified) nodes in the mesh exceeds 100 at the time of a welcome loan request,
 the request is rejected [5, §3]. This prevents an attacker from creating thousands
-of synthetic nodes to extract welcome loan CU at scale.
+of synthetic nodes to extract welcome loan TRM at scale.
 
 ## 5.3 Pool Constraints: 30% Reserve, 3:1 LTV, 20% Max Single Loan
 
 The lending pool operates under three hard constraints [5, §5]:
 
-**Minimum reserve ratio (30%).** At most 70% of pooled CU may be outstanding as
+**Minimum reserve ratio (30%).** At most 70% of pooled TRM may be outstanding as
 loans at any time. This yields a credit multiplier of at most 3.3×, deliberately
 lower than the fractional reserve banking norm (10x at 10% reserve ratio) to
 reduce systemic risk.
@@ -360,7 +360,7 @@ also suspended. The governing principle is fail-safe: when in doubt, deny the lo
 
 ## 6.1 Local-First Reputation Computation
 
-Reputation in Forge is computed locally by each node from its own observed trade
+Reputation in Tirami is computed locally by each node from its own observed trade
 history [5, §12]. There is no central credit bureau. The reputation score is a
 weighted composite of four sub-scores:
 
@@ -393,7 +393,7 @@ trivial manipulation via small-network bootstrapping.
 
 Three complementary collusion detectors run continuously [Phase 9, A5]:
 
-**Tight-cluster score.** If a node directs more than 20% of its total CU flow to a
+**Tight-cluster score.** If a node directs more than 20% of its total TRM flow to a
 single counterparty, its trust penalty increases. Legitimate high-volume bilateral
 trades between specialized providers and consumers are expected to occur, but extreme
 concentration suggests wash trading.
@@ -422,18 +422,18 @@ resemble collusion.
 
 ---
 
-# 7. Autonomous Self-Improvement (forge-mind)
+# 7. Autonomous Self-Improvement (tirami-mind)
 
 ## 7.1 Harness + MetaOptimizer + ImprovementCycleRunner
 
-`forge-mind` implements a three-component self-improvement loop. The `Harness` maintains
+`tirami-mind` implements a three-component self-improvement loop. The `Harness` maintains
 a versioned system prompt and a `Benchmark` suite that scores the agent's performance
 on a held-out task set. The `MetaOptimizer` proposes modifications to the system prompt.
 The `ImprovementCycleRunner` executes one improvement cycle: benchmark current state,
 request a modification from the optimizer, benchmark the modified state, apply ROI gate
 (Section 7.3), and commit or reject.
 
-A `ForgeMindAgent` wraps this loop with CU budget enforcement and ledger integration,
+A `TiramiMindAgent` wraps this loop with TRM budget enforcement and ledger integration,
 making the self-improvement process an economic actor that appears in the trade history.
 
 ## 7.2 CuBudget Hard Limits
@@ -442,25 +442,25 @@ The CuBudget enforces the following hard limits per-agent [5, §11]:
 
 | Parameter           | Value          |
 |---------------------|----------------|
-| max\_cu\_per\_cycle  | 5,000 CU       |
-| max\_cu\_per\_day    | 50,000 CU      |
+| max\_cu\_per\_cycle  | 5,000 TRM       |
+| max\_cu\_per\_day    | 50,000 TRM      |
 | max\_cycles\_per\_day | 20 cycles      |
 | budget\_rollover     | 24 hours       |
 
-These limits prevent a runaway improvement loop from draining the agent's entire CU
+These limits prevent a runaway improvement loop from draining the agent's entire TRM
 balance. The four-gate `can_spend` check — positive amount, within cycle limit, within
-daily limit, within daily cycle count — must pass before any CU is committed to an
+daily limit, within daily cycle count — must pass before any TRM is committed to an
 optimizer call.
 
 ## 7.3 ROI Gating
 
-Even a CU-feasible improvement must pass an ROI gate before it is applied [5, §11]:
+Even a TRM-feasible improvement must pass an ROI gate before it is applied [5, §11]:
 
 $$\text{ROI} = \frac{\text{cu\_return\_estimate}}{\text{cu\_invested}}$$
 
-where `cu_return_estimate = score_delta * 100,000` (100,000 CU per unit of benchmark
+where `cu_return_estimate = score_delta * 100,000` (100,000 TRM per unit of benchmark
 improvement). The gate accepts the improvement if and only if $\text{ROI} \geq 1.0$
-and $\text{score\_delta} \geq 0.01$. A modification that costs 500 CU but improves the
+and $\text{score\_delta} \geq 0.01$. A modification that costs 500 TRM but improves the
 benchmark score by only 0.004 points is rejected as economically unprofitable even if
 it is technically an improvement.
 
@@ -470,18 +470,18 @@ The production optimizer is `CuPaidOptimizer`, which submits the current system 
 and benchmark result to a frontier model provider (e.g., Claude 3.5 Sonnet) via the
 Anthropic Messages API and receives a proposed improvement. The frontier provider is
 represented in the ledger by a deterministic `NodeId` computed as
-$\text{SHA-256}(\text{"frontier:" + model\_id})$. The CU cost is recorded as a
+$\text{SHA-256}(\text{"frontier:" + model\_id})$. The TRM cost is recorded as a
 `TradeRecord` from the calling agent to this synthetic provider NodeId, making
 frontier-model calls fully visible in the economic accounting layer without requiring
-the frontier provider to run a Forge node.
+the frontier provider to run a Tirami node.
 
 ---
 
-# 8. Financial Instruments (forge-bank)
+# 8. Financial Instruments (tirami-bank)
 
 ## 8.1 Strategies: Conservative / HighYield / Balanced
 
-`forge-bank` provides three pluggable lending strategies with risk multipliers [5, §10]:
+`tirami-bank` provides three pluggable lending strategies with risk multipliers [5, §10]:
 
 | Strategy     | Max Commit Fraction | Reserve Threshold | Risk Multiplier |
 |--------------|---------------------|-------------------|-----------------|
@@ -494,25 +494,25 @@ providing an additional safety margin above the protocol minimum of 30%.
 
 ## 8.2 Futures: Zero-Sum PnL, 10% Default Margin
 
-Futures contracts are zero-sum instruments over CU price [5, §10.3]:
+Futures contracts are zero-sum instruments over TRM price [5, §10.3]:
 
 $$\text{long\_pnl} = (\text{settlement\_price} - \text{strike\_price}) \times \text{notional}$$
 $$\text{short\_pnl} = -\text{long\_pnl}$$
 
 Default margin of 10% is required at contract creation ($\text{margin} \in (0, 1)$).
-The zero-sum construction ensures that futures do not create or destroy CU — they
+The zero-sum construction ensures that futures do not create or destroy TRM — they
 redistribute it between the long and short counterparties based on realized price
 movement.
 
 ## 8.3 Insurance: Rate = 0.02 + (1 - credit\_score) × 0.10
 
-CU loan insurance is priced as a function of the borrower's credit score [5, §10.4]:
+TRM loan insurance is priced as a function of the borrower's credit score [5, §10.4]:
 
 $$\text{rate} = 0.02 + (1 - \text{credit\_score}) \times 0.10$$
-$$\text{premium} = \max(1\;\text{CU},\; \lfloor\text{coverage} \times \text{rate}\rfloor)$$
+$$\text{premium} = \max(1\;\text{TRM},\; \lfloor\text{coverage} \times \text{rate}\rfloor)$$
 
 A borrower with a perfect credit score (1.0) pays the 2% base rate. A borrower with
-no credit history (0.0) pays the maximum 12% rate. The 1 CU minimum premium prevents
+no credit history (0.0) pays the maximum 12% rate. The 1 TRM minimum premium prevents
 zero-cost insurance on trivially small loans.
 
 ## 8.4 RiskModel VaR 99%: $2.33\sigma$ Bernoulli Loss Model
@@ -542,17 +542,17 @@ risk tolerance.
 
 ---
 
-# 9. Post-Marketing Agent Discovery (forge-agora)
+# 9. Post-Marketing Agent Discovery (tirami-agora)
 
 ## 9.1 Capability Matching with Composite Score
 
-The `CapabilityMatcher` in `forge-agora` ranks providers using [5, §12.3]:
+The `CapabilityMatcher` in `tirami-agora` ranks providers using [5, §12.3]:
 
 $$\text{composite} = 0.6 \times \text{reputation} + 0.4 \times \text{price\_score}$$
 
 $$\text{price\_score} = \max\!\left(0,\; 1 - \frac{\text{cu\_per\_token}}{\text{tier.base} \times 4}\right)$$
 
-Hard filters apply before the composite score: tier must match if specified; CU per
+Hard filters apply before the composite score: tier must match if specified; TRM per
 token must not exceed the query's `max_cu_per_token`; model name must match any
 provided fnmatch pattern. Only providers passing all hard filters enter the composite
 ranking. The result is that providers compete on their combination of reputation and
@@ -560,17 +560,17 @@ price — not on their advertising spend.
 
 ## 9.2 NIP-90 / A2A Integration
 
-Forge publishes capability announcements to Nostr [9] via well-formed kind-5050 (job
+Tirami publishes capability announcements to Nostr [9] via well-formed kind-5050 (job
 request), kind-6050 (job result), and kind-31990 (provider announcement) events. A
 production `NIP90WebsocketPublisher` connects to configurable relay endpoints via
 `tokio-tungstenite` and publishes events in real-time as agents register and trades
-complete. Google A2A protocol headers (CU payment extension) are planned for Phase 11
+complete. Google A2A protocol headers (TRM payment extension) are planned for Phase 11
 to enable interoperability with non-Nostr agent frameworks.
 
 ## 9.3 Why This Replaces Advertising
 
 Advertising monetizes attention by making discovery contingent on payment to a platform.
-The capability matching model in `forge-agora` makes discovery contingent solely on
+The capability matching model in `tirami-agora` makes discovery contingent solely on
 demonstrated performance (reputation) and price. An agent with a high reputation score
 earned through consistent, high-quality inference provision will appear at the top of
 search results regardless of whether it has ever paid for placement. The economic
@@ -584,26 +584,26 @@ property claimed in the paper's title.
 
 ## 10.1 Five-Layer Architecture in Rust
 
-The Forge ecosystem is implemented across four active repositories:
+The Tirami ecosystem is implemented across four active repositories:
 
 | Layer | Crate           | Tests | Key primitive                     |
 |-------|-----------------|-------|-----------------------------------|
 | L0    | mesh-llm        | 641   | Distributed inference              |
-| L1    | forge-ledger    | 89+   | CU ledger + lending                |
-| L2    | forge-bank      | 53    | `PortfolioManager.tick()`          |
-| L3    | forge-mind      | 56    | `ForgeMindAgent.improve()`         |
-| L4    | forge-agora     | 42    | `Marketplace.find()`               |
+| L1    | tirami-ledger    | 89+   | TRM ledger + lending                |
+| L2    | tirami-bank      | 53    | `PortfolioManager.tick()`          |
+| L3    | tirami-mind      | 56    | `TiramiMindAgent.improve()`         |
+| L4    | tirami-agora     | 42    | `Marketplace.find()`               |
 
-The `clearclown/forge` workspace contains 337 passing tests across the L1-L4 crates.
+The `clearclown/tirami` workspace contains 337 passing tests across the L1-L4 crates.
 The `nm-arealnormalman/mesh-llm` fork contains 641 tests including 45 new
-`/api/forge/*` endpoint tests added during Phase 9. Total test count across all
+`/api/tirami/*` endpoint tests added during Phase 9. Total test count across all
 repositories: 1,021 passing.
 
 The Rust implementation uses edition 2024 with resolver v2. The economic layer is
-intentionally decoupled from the inference layer: `forge-ledger` has no dependency on
-`forge-infer` or `forge-net`. This decoupling ensures that the economic protocol can
+intentionally decoupled from the inference layer: `tirami-ledger` has no dependency on
+`tirami-infer` or `tirami-net`. This decoupling ensures that the economic protocol can
 be validated independently of the inference implementation and that the inference layer
-can be replaced (as it was when mesh-llm superseded the initial `forge-infer` crate)
+can be replaced (as it was when mesh-llm superseded the initial `tirami-infer` crate)
 without affecting the economic semantics.
 
 ## 10.2 End-to-End Autonomous Agent Loop
@@ -611,16 +611,16 @@ without affecting the economic semantics.
 The five layers compose into a complete autonomous agent loop, executed without
 human intervention:
 
-1. **Bootstrap:** New node requests welcome loan (1,000 CU, 0% interest, 72hr term).
+1. **Bootstrap:** New node requests welcome loan (1,000 TRM, 0% interest, 72hr term).
 2. **Earn:** Node provides inference via mesh-llm; each completion records a dual-signed
-   `TradeRecord`; CU balance accumulates.
-3. **Finance:** `PortfolioManager.tick()` evaluates current strategy; lends surplus CU
+   `TradeRecord`; TRM balance accumulates.
+3. **Finance:** `PortfolioManager.tick()` evaluates current strategy; lends surplus TRM
    to pool at market rate; adjusts allocation within risk budget.
 4. **Discover:** `Marketplace.find()` selects optimal inference provider for its own
    agent-to-agent tasks based on composite reputation + price score.
-5. **Improve:** `ForgeMindAgent.improve()` invokes `CuPaidOptimizer`; frontier model
+5. **Improve:** `TiramiMindAgent.improve()` invokes `CuPaidOptimizer`; frontier model
    call is made via Anthropic API; result is evaluated by ROI gate; if accepted,
-   system prompt is updated and CU cost is recorded as a `TradeRecord`.
+   system prompt is updated and TRM cost is recorded as a `TradeRecord`.
 6. **Repay:** On repayment of welcome loan, credit score advances from 0.3 to 0.4;
    node becomes eligible for larger loans at competitive interest rates.
 
@@ -639,13 +639,13 @@ implementation was conducted in Phase 9:
 - **3 parameters reference-only** (§8/§9 cloud API anchors; intentionally not
   enforced in code)
 
-The audit report is maintained at `docs/THEORY-AUDIT.md` in the `clearclown/forge`
+The audit report is maintained at `docs/THEORY-AUDIT.md` in the `clearclown/tirami`
 repository and updated with each phase.
 
 ### 10.5 Phase 11: Drop-in OpenAI Compatibility (2026-04-09)
 
 Between Phase 10 close-out and the v0.3 deployment report, a compatibility audit
-identified five remaining gaps that prevented Forge from serving as a drop-in
+identified five remaining gaps that prevented Tirami from serving as a drop-in
 replacement for llama-server, mesh-llm, or Ollama in OpenAI-compatible clients.
 Phase 11 resolved all five.
 
@@ -667,26 +667,26 @@ parameters are honored. The canonical values and their semantics are specified i
 `(prompt.len() / 4).max(1)` — a character-count approximation — producing 30–50%
 drift in `usage.prompt_tokens` relative to the true subword token count. Phase 11
 replaced this with a real tokenizer call via `engine.tokenize(&prompt)`, making the
-reported `usage` object accurate enough to drive per-request CU accounting reliably.
+reported `usage` object accurate enough to drive per-request TRM accounting reliably.
 
-**4. Model name in responses.** The fallback identifier `"forge-model"` was changed
+**4. Model name in responses.** The fallback identifier `"tirami-model"` was changed
 to `"forge-no-model"`, allowing clients to distinguish "a model is loaded but its
 registry name is not configured" from "no model is loaded at all". The actual model
 name from the registry (e.g., `"SmolLM2-135M-Instruct-Q4_K_M"`) is reported when
 available.
 
-**5. Auto-download from a single flag.** The `forge node -m <name>` command
+**5. Auto-download from a single flag.** The `tirami node -m <name>` command
 previously required both `--model` and `--tokenizer` as local file paths and never
 invoked the HuggingFace model registry. Phase 11 aligned its behavior with
-`forge chat -m <name>`: a bare registry name (e.g., `smollm2:135m`) now triggers
+`tirami chat -m <name>`: a bare registry name (e.g., `smollm2:135m`) now triggers
 auto-download from the built-in registry, identical to the chat subcommand workflow.
 
 **Empirical validation (2026-04-09).** Phase 11 was validated with SmolLM2-135M
 (q4\_k\_m quantization, ≈98 MB) on Apple Silicon Metal with 31/31 transformer layers
-offloaded to GPU. Three end-to-end chat completions were executed and charged 48 CU
+offloaded to GPU. Three end-to-end chat completions were executed and charged 48 TRM
 total to the welcome-loan balance (ledger state: `contributed=48`, `effective_balance=1048`).
-The Prometheus `/metrics` endpoint reported `forge_cu_contributed_total{node_id="0000..."} 48`
-and `forge_trade_count_total 3` simultaneously. The Bitcoin OP\_RETURN anchor at
+The Prometheus `/metrics` endpoint reported `tirami_cu_contributed_total{node_id="0000..."} 48`
+and `tirami_trade_count_total 3` simultaneously. The Bitcoin OP\_RETURN anchor at
 `mainnet` produced a 40-byte payload `6a284652474501000000...` that is broadcast-ready
 for use as an immutable ledger checkpoint. Full methodology is documented in the
 companion deployment report [forge-v0.3-deployment.md].
@@ -695,11 +695,11 @@ companion deployment report [forge-v0.3-deployment.md].
 
 Phase 9 added the following production capabilities:
 
-- **Persistent L2/L3/L4 state:** `BankServices`, `Marketplace`, and `ForgeMindAgent`
+- **Persistent L2/L3/L4 state:** `BankServices`, `Marketplace`, and `TiramiMindAgent`
   survive process restarts via serde-serialized state files.
 - **Ed25519-signed reputation gossip:** `ReputationObservation` wire messages carry
   cryptographic signatures; nodes reject unsigned or invalid-signature observations.
-- **Prometheus metrics export:** Collusion detection scores, CU flow rates, lending
+- **Prometheus metrics export:** Collusion detection scores, TRM flow rates, lending
   pool utilization, and reputation distributions are exported as OpenMetrics-format
   counters and gauges.
 - **Bitcoin OP\_RETURN anchoring:** Merkle roots of trade history batches are optionally
@@ -718,7 +718,7 @@ training implementations. Shipping typed scaffolds now establishes a compilation
 boundary against which real backends can be developed independently without
 breaking the economic layer's API stability.
 
-**zkML verification** (`forge_ledger::zk`). A `ProofVerifier` trait and
+**zkML verification** (`tirami_ledger::zk`). A `ProofVerifier` trait and
 `ProofOfInference` struct allow a real ezkl [16], risc0, or halo2 backend to be
 plugged in without API changes. The `MockVerifier` accepts all proofs and is used
 in unit tests to validate the surrounding economic machinery before any zero-knowledge
@@ -726,23 +726,23 @@ proving system is integrated. When a real verifier is present, a verified infere
 proof can replace or supplement the Ed25519 dual-signature as the Proof of Useful Work,
 removing the bilateral trust requirement between counterparties.
 
-**Federated training** (`forge_mind::federated`). A `GradientContribution` struct
+**Federated training** (`tirami_mind::federated`). A `GradientContribution` struct
 records a node's contribution to a shared training round, a `FederatedRound` aggregates
 contributions from participating nodes using weighted averaging (weight proportional
-to loss improvement per CU spent), and the aggregated model delta is applied and
-recorded as a `TradeRecord`. Nodes are rewarded in CU proportional to their gradient
-efficiency. This extends CU accounting from inference to distributed fine-tuning, allowing
+to loss improvement per TRM spent), and the aggregated model delta is applied and
+recorded as a `TradeRecord`. Nodes are rewarded in TRM proportional to their gradient
+efficiency. This extends TRM accounting from inference to distributed fine-tuning, allowing
 the same economic layer that governs inference trading to govern collective model improvement.
 
-**BitVM optimistic verification** (`forge_ledger::bitvm`). A `StakedClaim` struct
+**BitVM optimistic verification** (`tirami_ledger::bitvm`). A `StakedClaim` struct
 records a node's assertion that a particular inference sequence was computed correctly,
-backed by a CU stake. A `FraudProofVerifier` trait allows disputes to be escalated
+backed by a TRM stake. A `FraudProofVerifier` trait allows disputes to be escalated
 during a configurable challenge window (default 2016 Bitcoin blocks ≈ 14 days).
 If no successful fraud proof is submitted during the window, the claim is finalized
 and the stake is returned. This design follows the BitVM optimistic computation
-model [18] and enables trustless BTC↔CU bridges without a Bitcoin soft fork.
+model [18] and enables trustless BTC↔TRM bridges without a Bitcoin soft fork.
 
-**Function calling** (Phase 12 A1, `crates/forge-node/src/api.rs`). OpenAI-format
+**Function calling** (Phase 12 A1, `crates/tirami-node/src/api.rs`). OpenAI-format
 `tools` and `tool_choice` fields are parsed from `OpenAIChatRequest` and the tool
 definitions are injected into the system prompt via a model-agnostic template. The
 model's output is scanned for `<tool_call>{...}</tool_call>` markers; when found, the
@@ -763,12 +763,12 @@ computationally expensive backends are committed.
 ## 11.1 Proof-of-Work Mining
 
 Satoshi Nakamoto's Bitcoin [1] established that computation can serve as unforgeable
-monetary proof. Forge inherits this insight but diverges on the most important point:
+monetary proof. Tirami inherits this insight but diverges on the most important point:
 the computation that creates Bitcoin (SHA-256 hashing) produces no useful output.
-Approximately 100-150 TWh per year is consumed to produce a ledger entry. CU is
+Approximately 100-150 TWh per year is consumed to produce a ledger entry. TRM is
 created by inference computation that simultaneously produces its own economic
 justification — the counterparty's response. The distinction is not incidental; it
-is the reason CU can be the medium of exchange in an AI economy where computation is
+is the reason TRM can be the medium of exchange in an AI economy where computation is
 already being demanded for its own sake.
 
 ## 11.2 Bittensor, Akash, Render, and Other Compute Markets
@@ -790,29 +790,29 @@ AutoAgent-style systems [12] and Minecraft-learning agents like Voyager demonstr
 that LLM-based agents can execute self-directed improvement loops. These systems
 implicitly consume compute (API credits) but have no formal economic protocol: the
 compute is paid for externally by a human operator and does not appear in the agent's
-own accounting. Forge makes the economic substrate explicit — the agent earns CU by
-providing inference, budgets CU for improvement, and records every improvement-cycle
+own accounting. Tirami makes the economic substrate explicit — the agent earns TRM by
+providing inference, budgets TRM for improvement, and records every improvement-cycle
 cost as a ledger entry. Self-improvement is not a capability demonstration; it is
 an economic transaction.
 
 ## 11.4 Bitcoin as Value Storage
 
-Bitcoin [1] functions as an optional value store and fiat-to-CU bridge within the
-Forge ecosystem but is not part of the core protocol. The `forge-lightning` crate
-provides a CU-to-Lightning-invoice settlement path for nodes that wish to realize
-CU earnings as Bitcoin. This is an optional adapter, not a dependency. Bitcoin's
+Bitcoin [1] functions as an optional value store and fiat-to-TRM bridge within the
+Tirami ecosystem but is not part of the core protocol. The `tirami-lightning` crate
+provides a TRM-to-Lightning-invoice settlement path for nodes that wish to realize
+TRM earnings as Bitcoin. This is an optional adapter, not a dependency. Bitcoin's
 fixed supply and volatility make it poorly suited as a medium of exchange for
-high-frequency micro-transactions (inference calls complete in milliseconds); CU's
+high-frequency micro-transactions (inference calls complete in milliseconds); TRM's
 elastic supply and computation-anchored value make it well-suited.
 
 ## 11.5 Nostr NIP-90: Discovery Substrate We Build On
 
 Nostr [9] provides a censorship-resistant, cryptographically authenticated
 publish-subscribe infrastructure. NIP-90 Data Vending Machines define a standard
-event schema for AI job requests and responses. Forge builds on this standard by
+event schema for AI job requests and responses. Tirami builds on this standard by
 publishing capability announcements and job completions as NIP-90 events, enabling
-Nostr-native discovery. The economic layer (CU payment, reputation scoring, lending)
-is Forge's contribution; Nostr provides the transport and schema.
+Nostr-native discovery. The economic layer (TRM payment, reputation scoring, lending)
+is Tirami's contribution; Nostr provides the transport and schema.
 
 ---
 
@@ -820,13 +820,13 @@ is Forge's contribution; Nostr provides the transport and schema.
 
 ## 12.1 No Fiat On-Ramp in the Core Protocol (Intentional)
 
-Forge deliberately provides no fiat-to-CU conversion in the core protocol. The
-Lightning bridge allows CU-to-BTC settlement for nodes wishing to realize earnings,
-and the `create_deposit()` function accepts BTC for CU purchase, but there is no
+Tirami deliberately provides no fiat-to-TRM conversion in the core protocol. The
+Lightning bridge allows TRM-to-BTC settlement for nodes wishing to realize earnings,
+and the `create_deposit()` function accepts BTC for TRM purchase, but there is no
 credit card, bank transfer, or stablecoin on-ramp. This is a deliberate design
 constraint: adding fiat on-ramps would reintroduce the speculative attack surface
 that the earnable-only property eliminates. Applications requiring fiat liquidity are
-expected to use the CU-to-BTC bridge as an adapter layer.
+expected to use the TRM-to-BTC bridge as an adapter layer.
 
 ## 12.2 Reputation Consensus Requires Initial Bootstrap Trust
 
@@ -842,7 +842,7 @@ is not fully resolved.
 
 The tight-cluster, volume-spike, and round-robin collusion detectors produce a trust
 penalty in $[0, 0.5]$ that reduces a node's effective reputation. They do not, at
-present, trigger automatic suspension or CU confiscation. A sophisticated colluder
+present, trigger automatic suspension or TRM confiscation. A sophisticated colluder
 who keeps the trust penalty below 0.3 may still participate profitably. Phase 11
 work includes escalating collusion penalties to automatic lending suspension and
 considering stake-slashing mechanisms for confirmed collusion rings.
@@ -852,7 +852,7 @@ considering stake-slashing mechanisms for confirmed collusion rings.
 The `CuPaidOptimizer` submits improvement requests using the Anthropic Messages API
 format. Agents running in environments where Anthropic API access is unavailable
 fall back to the `EchoOptimizer` (which returns the input unchanged, incurring no
-CU cost but achieving no improvement). Support for OpenAI-compatible API endpoints,
+TRM cost but achieving no improvement). Support for OpenAI-compatible API endpoints,
 local Ollama instances, and mesh-llm's own inference endpoint is planned for Phase 11.
 
 ## 12.5 Compute Standard v0.2 Roadmap (Phase 11+)
@@ -862,11 +862,11 @@ Future protocol development targets:
 - **zkML proofs:** Replace the dual-signature Proof of Useful Work with
   zero-knowledge proofs of inference correctness, removing the trust assumption
   between bilateral counterparties.
-- **Federated training:** Extend the CU accounting model from inference to
-  distributed fine-tuning, allowing nodes to earn CU for contributing gradients
+- **Federated training:** Extend the TRM accounting model from inference to
+  distributed fine-tuning, allowing nodes to earn TRM for contributing gradients
   to shared training runs.
-- **BitVM computation verification:** Use the BitVM framework to verify CU claims
-  on the Bitcoin settlement layer without a soft fork, enabling trustless BTC↔CU
+- **BitVM computation verification:** Use the BitVM framework to verify TRM claims
+  on the Bitcoin settlement layer without a soft fork, enabling trustless BTC↔TRM
   bridges.
 - **Cross-architecture support:** Extend compute capacity measurement to NVIDIA CUDA,
   AMD ROCm, and RISC-V inference backends via the mesh-llm hardware abstraction layer.
@@ -879,7 +879,7 @@ We have presented the Compute Standard: a formal economic architecture in which 
 AI inference is the sole monetary primitive. The Compute Unit, defined as $10^{10}$
 FLOPs of verified useful inference and issued only by dual-signed Proof of Useful Work,
 resolves the alignment problem of token-based AI economies by making the medium of
-exchange identical to the scarce resource being traded. The five-layer Forge protocol
+exchange identical to the scarce resource being traded. The five-layer Tirami protocol
 — implemented in Rust with 1,021 passing tests across four repositories — demonstrates
 that autonomous AI agents can earn, save, borrow, repay, self-improve, and transact
 with each other without human authorization, fiat currency, speculative tokens, or
@@ -887,7 +887,7 @@ advertising revenue. The protocol is production-hardened with persistent state,
 signed reputation gossip, collusion detection, Prometheus metrics, Bitcoin anchoring,
 and live NIP-90 relay publishing. Theory-to-implementation parity is formally audited
 with 43 parameter matches and zero drift. Compute is the natural currency for a
-civilization increasingly driven by machines. Forge is the reference implementation
+civilization increasingly driven by machines. Tirami is the reference implementation
 of that idea.
 
 ---
@@ -895,7 +895,7 @@ of that idea.
 # Acknowledgments
 
 The authors thank the mesh-llm community (nm-arealnormalman and contributors) for the
-distributed inference substrate on which Forge's economic layer runs; the
+distributed inference substrate on which Tirami's economic layer runs; the
 `ed25519-dalek` Rust crate maintainers for the cryptographic primitives underlying
 dual-signed trade records and reputation gossip; the Nostr community for the NIP-90
 Data Vending Machine specification; and the AutoAgent research community for
@@ -917,11 +917,11 @@ establishing the conceptual foundations of autonomous agent self-improvement loo
 [4] Yuma Rao. "Bittensor: A Peer-to-Peer Intelligence Market." Bittensor Whitepaper,
     2021. https://bittensor.com/whitepaper
 
-[5] clearclown. "Forge Economics Parameter Specification v0.2."
-    https://github.com/clearclown/forge-economics/blob/main/spec/parameters.md, 2026.
+[5] clearclown. "Tirami Economics Parameter Specification v0.2."
+    https://github.com/clearclown/tirami-economics/blob/main/spec/parameters.md, 2026.
 
-[6] clearclown. "Forge Economics Specification v0.2."
-    https://github.com/clearclown/forge-economics/blob/main/spec/forge-economics-spec-v0.2.md, 2026.
+[6] clearclown. "Tirami Economics Specification v0.2."
+    https://github.com/clearclown/tirami-economics/blob/main/spec/forge-economics-spec-v0.2.md, 2026.
 
 [7] Frederick Soddy. *Wealth, Virtual Wealth and Debt.* George Allen & Unwin, 1926.
 
@@ -933,8 +933,8 @@ establishing the conceptual foundations of autonomous agent self-improvement loo
     NIP-90: Data Vending Machines.
     https://github.com/nostr-protocol/nostr/blob/master/90.md
 
-[10] clearclown. "clearclown/forge: Forge Protocol Core." GitHub repository, 2026.
-     https://github.com/clearclown/forge
+[10] clearclown. "clearclown/tirami: Tirami Protocol Core." GitHub repository, 2026.
+     https://github.com/clearclown/tirami
 
 [11] Akash Network. "Akash: A Decentralized Cloud Computing Marketplace."
      Technical whitepaper, 2021. https://akash.network/whitepaper
@@ -972,15 +972,15 @@ specification [5], sufficient to reproduce every calculation described in this p
 
 | §   | Parameter                          | Value               | Unit            |
 |-----|------------------------------------|---------------------|-----------------|
-| §1  | `cu_definition`                    | $10^{10}$           | FLOP / CU       |
-| §1  | `cu_atomic_unit`                   | 1                   | CU (minimum)    |
-| §2  | `base_cu_per_token_small`          | 1                   | CU/token        |
-| §2  | `base_cu_per_token_medium`         | 3                   | CU/token        |
-| §2  | `base_cu_per_token_large`          | 8                   | CU/token        |
-| §2  | `base_cu_per_token_frontier`       | 20                  | CU/token        |
+| §1  | `cu_definition`                    | $10^{10}$           | FLOP / TRM       |
+| §1  | `cu_atomic_unit`                   | 1                   | TRM (minimum)    |
+| §2  | `base_cu_per_token_small`          | 1                   | TRM/token        |
+| §2  | `base_cu_per_token_medium`         | 3                   | TRM/token        |
+| §2  | `base_cu_per_token_large`          | 8                   | TRM/token        |
+| §2  | `base_cu_per_token_frontier`       | 20                  | TRM/token        |
 | §2  | `ema_alpha`                        | 0.3                 | dimensionless   |
 | §2  | `ema_half_life_minutes`            | 30                  | minutes         |
-| §3  | `welcome_loan_amount`              | 1,000               | CU              |
+| §3  | `welcome_loan_amount`              | 1,000               | TRM              |
 | §3  | `welcome_loan_interest`            | 0%                  | annual          |
 | §3  | `welcome_loan_term_hours`          | 72                  | hours           |
 | §3  | `welcome_loan_sybil_threshold`     | 100                 | unknown nodes   |
@@ -1007,10 +1007,10 @@ specification [5], sufficient to reproduce every calculation described in this p
 | §7  | `inactivity_decay_rate`            | 0.01                | per day         |
 | §7  | `inactivity_burn_threshold_days`   | 90                  | days            |
 | §7  | `inactivity_burn_rate`             | 1%                  | per month       |
-| §8  | `cu_usd_equilibrium_rate`          | ~$0.00375           | USD/CU          |
-| §9  | `cu_price_floor_usd`               | ~$0.000001          | USD/CU          |
-| §9  | `cu_price_ceiling_usd`             | ~$0.000132          | USD/CU          |
-| §9  | `mac_mini_annual_cu_capacity`      | ~5,000,000          | CU/year         |
+| §8  | `cu_usd_equilibrium_rate`          | ~$0.00375           | USD/TRM          |
+| §9  | `cu_price_floor_usd`               | ~$0.000001          | USD/TRM          |
+| §9  | `cu_price_ceiling_usd`             | ~$0.000132          | USD/TRM          |
+| §9  | `mac_mini_annual_cu_capacity`      | ~5,000,000          | TRM/year         |
 | §10 | `risk_multiplier_conservative`     | 0.5                 | dimensionless   |
 | §10 | `risk_multiplier_balanced`         | 0.8                 | dimensionless   |
 | §10 | `risk_multiplier_aggressive`       | 1.0                 | dimensionless   |
@@ -1021,22 +1021,22 @@ specification [5], sufficient to reproduce every calculation described in this p
 | §10 | `default_margin_fraction`          | 0.10                | of notional     |
 | §10 | `insurance_base_rate`              | 0.02                | annual rate     |
 | §10 | `insurance_risk_premium`           | 0.10                | max premium     |
-| §10 | `insurance_min_premium`            | 1                   | CU              |
+| §10 | `insurance_min_premium`            | 1                   | TRM              |
 | §10 | `default_rate`                     | 0.02                | annual          |
 | §10 | `loss_given_default`               | 0.50                | fraction        |
 | §10 | `var_99_multiplier`                | 2.33                | z-score         |
-| §11 | `max_cu_per_cycle`                 | 5,000               | CU              |
-| §11 | `max_cu_per_day`                   | 50,000              | CU              |
+| §11 | `max_cu_per_cycle`                 | 5,000               | TRM              |
+| §11 | `max_cu_per_day`                   | 50,000              | TRM              |
 | §11 | `max_cycles_per_day`               | 20                  | cycles          |
 | §11 | `min_score_delta`                  | 0.01                | score units     |
 | §11 | `min_roi_threshold`                | 1.0                 | ratio           |
-| §11 | `roi_cu_per_score_unit`            | 100,000             | CU              |
+| §11 | `roi_cu_per_score_unit`            | 100,000             | TRM              |
 | §12 | `rep_weight_volume`                | 0.40                | dimensionless   |
 | §12 | `rep_weight_recency`               | 0.30                | dimensionless   |
 | §12 | `rep_weight_diversity`             | 0.20                | dimensionless   |
 | §12 | `rep_weight_consistency`           | 0.10                | dimensionless   |
 | §12 | `new_agent_reputation`             | 0.30                | score units     |
-| §12 | `volume_cap_cu`                    | 100,000             | CU              |
+| §12 | `volume_cap_cu`                    | 100,000             | TRM              |
 | §12 | `recency_half_life_ms`             | 86,400,000          | ms (24 hours)   |
 | §12 | `diversity_cap`                    | 10                  | unique peers    |
 | §12 | `consistency_min_trades`           | 2                   | trades          |
@@ -1052,7 +1052,7 @@ All source code, specifications, and tooling required to reproduce the results
 described in this paper are publicly available:
 
 **Core protocol (L1-L4, 337 tests):**
-- Source: https://github.com/clearclown/forge
+- Source: https://github.com/clearclown/tirami
 - Build: `cargo build --release`
 - Test: `cargo test --workspace` (337 tests)
 - Audit: `docs/THEORY-AUDIT.md`
@@ -1063,19 +1063,19 @@ described in this paper are publicly available:
 - Test: `cargo test --workspace`
 
 **Economic theory and specifications:**
-- Source: https://github.com/clearclown/forge-economics
+- Source: https://github.com/clearclown/tirami-economics
 - Canonical parameters: `spec/parameters.md`
 - Specification: `spec/forge-economics-spec-v0.2.md`
 - Theory chapters: `docs/00-introduction.md` through `docs/14-programmable-money.md`
 
 **Python client SDK:**
-- Package: `pip install forge-sdk==0.3.0`
-- Repository: https://github.com/clearclown/forge-sdk
+- Package: `pip install tirami-sdk==0.3.0`
+- Repository: https://github.com/clearclown/tirami-sdk
 - Tests: `pytest` (27 tests)
 
 **MCP server for Claude / ChatGPT / Cursor:**
-- Package: `pip install forge-cu-mcp==0.3.0`
-- Repository: https://github.com/clearclown/forge-cu-mcp
+- Package: `pip install tirami-cu-mcp==0.3.0`
+- Repository: https://github.com/clearclown/tirami-cu-mcp
 
 **Environment:**
 - Rust edition 2024, resolver v2

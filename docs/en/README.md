@@ -1,4 +1,4 @@
-# Forge Economics — English translations
+# Tirami Economics — English translations
 
 This directory contains English-language versions of the most important
 theory chapters. The canonical source is the Japanese files in the parent
