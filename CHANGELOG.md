@@ -17,13 +17,13 @@
 - spec/forge-economics-spec-v0.2.md (Chapter 11-14 を含む拡張版)
 
 ### Changed
-- README.md: CU 定義を「1 億回」から「10 億 FLOP」に修正 (#24)
+- README.md: TRM 定義を「1 億回」から「10 億 FLOP」に修正 (#24)
 - spec/forge-economics-spec.md → spec/forge-economics-spec-v0.1.md (rename)
 - docs/appendix-glossary.md: Chapter 11-14 由来の新用語を追加
 - docs/appendix-bibliography.md: 2008 年以降の AI 経済学文献を追加
 - docs/00-introduction.md: 章マップに Chapter 12, 13, 14 を追加
 - CLAUDE.md: ディレクトリ宣言を実態に合わせ、`docs/books/（予約）` を削除
-- 主要章 (3, 4, 5, 6) に forge 本体への相互参照リンクを追加
+- 主要章 (3, 4, 5, 6) に tirami 本体への相互参照リンクを追加
 
 ## [0.1.0] - 2026-04-XX
 
@@ -37,9 +37,9 @@
 - docs/05-banking.md (第5章: 銀行と信用)
 - docs/06-exchange.md (第6章: 為替と二つの経済圏)
 - docs/07-growth.md (第7章: 経済成長と自己改善)
-- docs/08-market-failures.md (第8章: 市場の失敗と Forge の解決)
+- docs/08-market-failures.md (第8章: 市場の失敗と Tirami の解決)
 - docs/09-actors.md (第9章: 四つの経済主体)
-- docs/10-principles.md (第10章: Forge 経済学の五つの原理)
+- docs/10-principles.md (第10章: Tirami 経済学の五つの原理)
 - docs/11-competitive-landscape.md (第11章: 競合分析)
 - docs/12-p2p-architecture.md (第12章: P2P アーキテクチャ)
 - docs/13-open-questions.md (第13章: 残された課題)

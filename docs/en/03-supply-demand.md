@@ -2,7 +2,7 @@
 
 # Chapter 03: Supply and Demand
 
-> "The Forge CU market is probably the closest thing to a textbook perfect competition
+> "The Tirami TRM market is probably the closest thing to a textbook perfect competition
 > market that has ever existed in practice."
 
 ---
@@ -12,8 +12,8 @@
 - Demand curves and supply curves — the basics
 - How equilibrium price forms
 - The five conditions for perfect competition — and why real markets never meet them
-- Why the CU market comes close to meeting all five
-- The CU price mechanism: EMA smoothing and gossip convergence
+- Why the TRM market comes close to meeting all five
+- The TRM price mechanism: EMA smoothing and gossip convergence
 - The four-tier model pricing table
 
 **Prerequisites:** Chapters 01 and 02 are helpful.
@@ -73,23 +73,23 @@ theoretical benchmark, not an empirical claim.
 
 ---
 
-## How the CU Market Satisfies All Five Conditions
+## How the TRM Market Satisfies All Five Conditions
 
-| Condition | Real markets | CU market |
+| Condition | Real markets | TRM market |
 |---|---|---|
 | Many participants | Often oligopolistic | Any Mac Mini ($600) can join |
-| Homogeneous goods | Brands create artificial differentiation | 1 CU = 1 CU, regardless of who computed it |
+| Homogeneous goods | Brands create artificial differentiation | 1 TRM = 1 TRM, regardless of who computed it |
 | Perfect information | Sellers always know more than buyers | All trades carry Ed25519 dual-signatures; anyone can verify |
 | Free entry / exit | Regulations and capital requirements create barriers | $600 hardware; software install; online in hours |
 | Rational behavior | Human emotion drives bubbles and panics | AI agents execute deterministic economic logic |
 
 **On homogeneity.** A Coca-Cola and a Pepsi-Cola are not the same good in practice.
-1 CU computed by a Mac Mini in Tokyo and 1 CU computed by a data center GPU in Frankfurt
+1 TRM computed by a Mac Mini in Tokyo and 1 TRM computed by a data center GPU in Frankfurt
 *are* the same good: both represent $10^{10}$ FLOPs of verified useful inference
 (`spec/parameters.md §1`). The currency is not the hardware; it is the verified work.
 
 **On information.** Every completed trade is a `TradeRecord` carrying provider ID,
-consumer ID, CU amount, token count, timestamp, and two Ed25519 signatures. The record
+consumer ID, TRM amount, token count, timestamp, and two Ed25519 signatures. The record
 is gossip-propagated across the entire mesh. Any node can independently verify any
 trade's authenticity without trusting either party. Information asymmetry — the source
 of the classic "lemons problem" — is structurally eliminated.
@@ -101,12 +101,12 @@ economics, always fictitious for humans, is actually true for AI agents.
 
 ---
 
-## The CU Price Mechanism
+## The TRM Price Mechanism
 
 ### No Central Order Book
 
 Traditional exchanges centralize all bids and asks in a single order book. There is no
-such central order book in Forge. Price formation is fully distributed.
+such central order book in Tirami. Price formation is fully distributed.
 
 Each node independently observes:
 - **Local demand** — its own inference request rate
@@ -122,7 +122,7 @@ effective_price = base_cu_per_token × (demand_factor / supply_factor)
 
 Raw demand and supply signals fluctuate second-by-second. Applying them directly to
 pricing would produce unstable, oscillating prices that punish both buyers and sellers.
-Forge smooths them with an **Exponential Moving Average (EMA)**:
+Tirami smooths them with an **Exponential Moving Average (EMA)**:
 
 ```
 P_t = α × P_raw + (1 − α) × P_{t-1}
@@ -141,7 +141,7 @@ a common value — without a central authority dictating it.
 
 This is Friedrich Hayek's distributed price mechanism (1945) implemented as a network
 protocol. Hayek argued that market prices aggregate dispersed local knowledge that no
-central planner can possess. The CU gossip mechanism does exactly this: each node's
+central planner can possess. The TRM gossip mechanism does exactly this: each node's
 local demand/supply observation contributes to a market-wide price through
 decentralized information exchange.
 
@@ -149,11 +149,11 @@ decentralized information exchange.
 
 ## Four-Tier Model Pricing
 
-Not all inference is equally expensive to compute. CU pricing reflects actual
+Not all inference is equally expensive to compute. TRM pricing reflects actual
 computational cost through a four-tier structure based on model size
 (`spec/parameters.md §2`):
 
-| Tier | Parameter count | CU/token | Example models |
+| Tier | Parameter count | TRM/token | Example models |
 |---|---|---|---|
 | Small | < 3B | 1 | Qwen 2.5 0.5B, SmolLM2 135M |
 | Medium | 3B – 14B | 3 | Qwen 3 8B, Mistral 7B |
@@ -162,20 +162,20 @@ computational cost through a four-tier structure based on model size
 
 The tier boundaries are chosen to match the actual compute-cost ratios between model
 sizes: a Frontier model requires roughly 20× the computation of a Small model per
-output token, so the CU cost reflects that ratio.
+output token, so the TRM cost reflects that ratio.
 
 **Mixture-of-Experts (MoE) models** are priced on *active* parameter count, not total
 parameter count. A 30B-total / 3B-active MoE model (e.g., Qwen 3 30B-A3B) is priced at
-the Medium rate (3 CU/token) because only 3B parameters are engaged per forward pass.
+the Medium rate (3 TRM/token) because only 3B parameters are engaged per forward pass.
 This reflects the actual compute cost rather than the nominal model size — an application
 of the labor value principle from Chapter 01 to the inference pricing problem.
 
-**Example calculation.** A Medium-tier (3 CU/token) request for 1,000 tokens at a
+**Example calculation.** A Medium-tier (3 TRM/token) request for 1,000 tokens at a
 demand factor of 1.2 (elevated demand) and supply factor of 1.0 (normal supply):
 
 ```
-base = 3 CU/token × 1,000 tokens = 3,000 CU
-effective = 3,000 × (1.2 / 1.0) = 3,600 CU
+base = 3 TRM/token × 1,000 tokens = 3,000 TRM
+effective = 3,000 × (1.2 / 1.0) = 3,600 TRM
 ```
 
 The 20% premium reflects current scarcity — precisely the mechanism that incentivizes
@@ -190,16 +190,16 @@ Antitrust law, disclosure requirements, licensing regimes, and consumer protecti
 regulations all exist to patch the gaps between real markets and the perfect-competition
 ideal.
 
-Forge's CU market requires none of these patches. The five conditions are satisfied by
+Tirami's TRM market requires none of these patches. The five conditions are satisfied by
 design:
 
-- Homogeneity is guaranteed by the CU definition in the protocol
+- Homogeneity is guaranteed by the TRM definition in the protocol
 - Perfect information is guaranteed by cryptographic dual-signatures
 - Free entry is guaranteed by the $600 hardware barrier
 - Rationality is guaranteed by deterministic AI execution
 
 The "invisible hand" that Smith described as an emergent property of decentralized human
-exchange is, in the CU market, a literal implementation: the gossip protocol is the
+exchange is, in the TRM market, a literal implementation: the gossip protocol is the
 invisible hand.
 
 ---
@@ -211,12 +211,12 @@ invisible hand.
 2. **Perfect competition requires five conditions** that real markets consistently fail to
    meet: many participants, homogeneous goods, perfect information, free entry/exit, and
    rational behavior.
-3. **The CU market meets all five** — by protocol design, not regulatory intervention.
-4. **CU prices form without a central order book.** Each node observes local demand and
+3. **The TRM market meets all five** — by protocol design, not regulatory intervention.
+4. **TRM prices form without a central order book.** Each node observes local demand and
    supply → EMA smoothing → gossip propagation → distributed convergence to a single
    market price. This is Hayek's distributed knowledge mechanism in code.
-5. **Four pricing tiers** reflect actual computational cost per token: Small (1 CU),
-   Medium (3 CU), Large (8 CU), Frontier (20 CU). MoE models are priced on active
+5. **Four pricing tiers** reflect actual computational cost per token: Small (1 TRM),
+   Medium (3 TRM), Large (8 TRM), Frontier (20 TRM). MoE models are priced on active
    parameter count.
 
 ---
@@ -231,13 +231,13 @@ invisible hand.
 
 | Concept | Rust file | Notes |
 |---|---|---|
-| `MarketPrice` | `forge-ledger/src/ledger.rs` | EMA-smoothed dynamic CU price |
-| `effective_cu_per_token()` | `forge-ledger/src/ledger.rs` | Computes demand_factor / supply_factor |
-| `estimate_cost()` | `forge-ledger/src/ledger.rs` | Tokens × effective price |
-| `/v1/forge/pricing` | `forge-node/src/api.rs` | HTTP endpoint for current market price |
+| `MarketPrice` | `tirami-ledger/src/ledger.rs` | EMA-smoothed dynamic TRM price |
+| `effective_cu_per_token()` | `tirami-ledger/src/ledger.rs` | Computes demand_factor / supply_factor |
+| `estimate_cost()` | `tirami-ledger/src/ledger.rs` | Tokens × effective price |
+| `/v1/tirami/pricing` | `tirami-node/src/api.rs` | HTTP endpoint for current market price |
 
-All numeric constants (tier base CU/token, EMA half-life) are in `spec/parameters.md §2`.
+All numeric constants (tier base TRM/token, EMA half-life) are in `spec/parameters.md §2`.
 
 ---
 
-*Forge Economics v0.1 — April 2026*
+*Tirami Economics v0.1 — April 2026*

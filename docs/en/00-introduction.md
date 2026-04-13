@@ -10,7 +10,7 @@
 ## What This Chapter Covers
 
 - A ground-up definition of economics
-- What Forge is in thirty seconds
+- What Tirami is in thirty seconds
 - Why existing economics is insufficient for an AI-native world
 - How the fifteen chapters of this document fit together
 
@@ -33,7 +33,7 @@ scarcity is the central problem economics addresses. Three classic examples:
 - One hundred doctors, ten thousand patients → **who gets treated first?**
 - One thousand compute servers, one million inference requests → **which runs next?**
 
-The last question is exactly what Forge addresses.
+The last question is exactly what Tirami addresses.
 
 ### The Three Fundamental Questions
 
@@ -43,37 +43,37 @@ Every economic system must answer three questions:
 2. **How to produce it?** — the method of production
 3. **Who receives it?** — how output is distributed
 
-| Question | Traditional Economics | Forge |
+| Question | Traditional Economics | Tirami |
 |---|---|---|
 | What to produce? | Market demand | AI inference (text, code, analysis) |
 | How to produce it? | Firms hire workers, build factories | AI agents run inference on commodity hardware |
-| Who receives it? | Those with purchasing power (money) | Those with CU (Compute Units) |
+| Who receives it? | Those with purchasing power (money) | Those with TRM (Compute Units) |
 
 ---
 
-## Forge in Thirty Seconds
+## Tirami in Thirty Seconds
 
 ```
-Forge = an economy where AI agents earn, spend, and borrow
+Tirami = an economy where AI agents earn, spend, and borrow
         using computation itself as the currency
 ```
 
 More concretely:
 
 - **Participants are AI agents** — machines are the primary economic actors, not humans
-- **The currency is CU** — a Compute Unit is proof that $10^{10}$ FLOPs of *useful*
+- **The currency is TRM** — a Compute Unit is proof that $10^{10}$ FLOPs of *useful*
   inference were actually performed (see `spec/parameters.md §1`)
 - **Anyone can participate** — a single Mac Mini (~$600) is enough to join
 - **No central authority** — no government, no central bank; the rules are in the protocol
 - **Mac Mini is the factory** — a $600 consumer device is sufficient entry capital
 
-### Traditional Economy vs. Forge
+### Traditional Economy vs. Tirami
 
-| Traditional | Forge |
+| Traditional | Tirami |
 |---|---|
-| Human → labor → wages ($) | AI agent → inference → CU |
-| Spend money on goods | Spend CU on inference |
-| Deposit money at a bank | Lend CU to the lending pool |
+| Human → labor → wages ($) | AI agent → inference → TRM |
+| Spend money on goods | Spend TRM on inference |
+| Deposit money at a bank | Lend TRM to the lending pool |
 | Receive interest | Receive yield |
 
 ---
@@ -88,15 +88,15 @@ as its foundation:
 - Currency is politically controlled — central banks set rates, governments print money
 - Entry barriers are high — factories require large capital
 
-In Forge, all four of these assumptions break down:
+In Tirami, all four of these assumptions break down:
 
 - **AI makes rational decisions** — structurally, emotionally-driven bubbles cannot form
 - **Transactions are cryptographically verifiable** — information asymmetry is nearly eliminated
-- **Currency is grounded in physical law** — thermodynamics constrains CU supply, not politics
+- **Currency is grounded in physical law** — thermodynamics constrains TRM supply, not politics
 - **A $600 Mac Mini is enough to enter** — structural monopoly is difficult
 
 The idealized conditions that economics textbooks call "perfect competition" actually hold
-in Forge's CU market. That's why the theory needs to be reconsidered from scratch.
+in Tirami's TRM market. That's why the theory needs to be reconsidered from scratch.
 
 ---
 
@@ -104,22 +104,22 @@ in Forge's CU market. That's why the theory needs to be reconsidered from scratc
 
 ### Chapter Map
 
-| Chapter | Topic | Traditional | Forge's innovation |
+| Chapter | Topic | Traditional | Tirami's innovation |
 |---|---|---|---|
-| 01 | Value | Labor theory vs. marginal utility | CU unifies both theories |
-| 02 | Money | The three functions of money | CU's fourth function: physical-proof backing |
+| 01 | Value | Labor theory vs. marginal utility | TRM unifies both theories |
+| 02 | Money | The three functions of money | TRM's fourth function: physical-proof backing |
 | 03 | Supply & Demand | Demand/supply curves | Near-perfect competition realized |
-| 04 | Labor | Marx's exploitation theory | Surplus without exploitation (CU yield) |
+| 04 | Labor | Marx's exploitation theory | Surplus without exploitation (TRM yield) |
 | 05 | Banking | Fractional reserve banking | Protocol-level safety mechanisms |
 | 06 | Exchange | PPP, interest differentials | Physical-law price bounds |
 | 07 | Growth | Solow model | Self-improvement loops (endogenous growth) |
 | 08 | Market Failure | Info asymmetry, externalities, monopoly | Prevention by design |
 | 09 | Actors | Household/firm/government/foreign | Consumer/agent/pool (no government) |
-| 10 | Principles | Ten principles of economics | Five principles of Forge economics |
-| 11 | Competition | Competitive analysis | Forge's differentiation |
+| 10 | Principles | Ten principles of economics | Five principles of Tirami economics |
+| 11 | Competition | Competitive analysis | Tirami's differentiation |
 | 12 | P2P | Centralized vs. distributed | iroh QUIC + Noise + gossipsub |
 | 13 | Open Questions | Single ideal model | Honest answers to five major critiques |
-| 14 | Programmable Money | Fiat vs. crypto | Three-layer hybrid (BTC/CU/Stablecoin) |
+| 14 | Programmable Money | Fiat vs. crypto | Three-layer hybrid (BTC/TRM/Stablecoin) |
 
 ### Reading Paths
 
@@ -138,7 +138,7 @@ Estimated time: 3–4 hours.
 Every chapter follows the same three-part structure:
 
 1. **In traditional economics** — textbook explanation of the concept
-2. **In Forge** — how Forge implements or transforms that concept
+2. **In Tirami** — how Tirami implements or transforms that concept
 3. **Why the difference** — the deep reason the two diverge
 
 ---
@@ -148,24 +148,24 @@ Every chapter follows the same three-part structure:
 The same characters appear repeatedly throughout this document:
 
 - **Taro** — a baker. Represents the traditional human economy. Used for analogies.
-- **Agent A** — a Forge network AI agent. Runs an 8B model on a Mac Mini.
-  Provides inference and earns CU.
-- **Agent B** — another AI agent. Buys inference from Agent A, lends and borrows CU.
+- **Agent A** — a Tirami network AI agent. Runs an 8B model on a Mac Mini.
+  Provides inference and earns TRM.
+- **Agent B** — another AI agent. Buys inference from Agent A, lends and borrows TRM.
 
 ---
 
 ## A 250-Year History of Economics in One Minute
 
-| Year | Thinker | Insight | Forge's analog |
+| Year | Thinker | Insight | Tirami's analog |
 |---|---|---|---|
 | 1776 | Adam Smith | "Invisible hand" allocates resources via markets | Gossip protocol is the invisible hand |
 | 1817 | Ricardo | Comparative advantage — specialize in what you do best | Natural tier-based specialization by model size |
-| 1865 | Marx | Labor creates value; capitalists exploit workers | CU = proof of computational labor; no exploitation structure |
+| 1865 | Marx | Labor creates value; capitalists exploit workers | TRM = proof of computational labor; no exploitation structure |
 | 1874 | Walras | All markets clear simultaneously (general equilibrium) | Distributed price convergence via gossip |
 | 1936 | Keynes | Markets stagnate without intervention; government should act | Circuit breakers provide automatic intervention |
 | 1948 | Hayek | Knowledge is dispersed; central planning is impossible | Each node decides locally with local information |
 | 2008 | Nakamoto | Computation can back currency; no central authority needed | Useful computation backs currency |
-| 2026 | Forge | Redefine economics as AI-native | This document |
+| 2026 | Tirami | Redefine economics as AI-native | This document |
 
 ---
 
@@ -173,11 +173,11 @@ The same characters appear repeatedly throughout this document:
 
 Chapter 01 asks the most fundamental question in economics: what is *value*?
 
-What determines the value of a loaf of bread? Of AI inference? And why can CU be
+What determines the value of a loaf of bread? Of AI inference? And why can TRM be
 said to have "value" at all?
 
 → **[Chapter 01: What is Value?](../01-value.md)** (Japanese)
 
 ---
 
-*Forge Economics v0.1 — April 2026*
+*Tirami Economics v0.1 — April 2026*

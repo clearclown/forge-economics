@@ -1,18 +1,18 @@
-# Forge 経済学パラメータ仕様
+# Tirami 経済学パラメータ仕様
 
 > 全数値定数のシングルソース。各章はここを参照して矛盾を防ぐ。
 > *Version 0.2 — 2026 年 4 月*
 
-このファイルは Forge 経済の数値定数を一元管理します。spec, docs/, README で言及される数値はすべてここから参照されるべきです。値を変更する場合は、必ずこのファイルを起点とし、grep ですべての参照箇所を確認してください。
+このファイルは Tirami 経済の数値定数を一元管理します。spec, docs/, README で言及される数値はすべてここから参照されるべきです。値を変更する場合は、必ずこのファイルを起点とし、grep ですべての参照箇所を確認してください。
 
 ---
 
-## 1. CU の基本定義
+## 1. TRM の基本定義
 
 | パラメータ | 値 | 単位 | 説明 |
 |----------|-----|------|------|
-| `cu_definition` | 10 億 FLOP | FLOP | 1 CU が表す物理的な計算量 |
-| `cu_atomic_unit` | 1 CU | CU | 取引可能な最小単位 |
+| `cu_definition` | 10 億 FLOP | FLOP | 1 TRM が表す物理的な計算量 |
+| `cu_atomic_unit` | 1 TRM | TRM | 取引可能な最小単位 |
 
 ---
 
@@ -20,10 +20,10 @@
 
 | パラメータ | 値 | 説明 |
 |----------|-----|------|
-| `base_cu_per_token_small` | 1 CU/token | Small ティア (< 3B params) |
-| `base_cu_per_token_medium` | 3 CU/token | Medium ティア (3B - 14B params) |
-| `base_cu_per_token_large` | 8 CU/token | Large ティア (14B - 70B params) |
-| `base_cu_per_token_frontier` | 20 CU/token | Frontier ティア (> 70B params) |
+| `base_cu_per_token_small` | 1 TRM/token | Small ティア (< 3B params) |
+| `base_cu_per_token_medium` | 3 TRM/token | Medium ティア (3B - 14B params) |
+| `base_cu_per_token_large` | 8 TRM/token | Large ティア (14B - 70B params) |
+| `base_cu_per_token_frontier` | 20 TRM/token | Frontier ティア (> 70B params) |
 | `ema_half_life_minutes` | 30 分 | 価格平滑化の半減期 |
 
 価格式:
@@ -37,7 +37,7 @@ effective_price = base_cu_per_token × demand_factor / supply_factor
 
 | パラメータ | 値 | 説明 |
 |----------|-----|------|
-| `welcome_loan_amount` | 1,000 CU | 新規ノードへの初期融資額 |
+| `welcome_loan_amount` | 1,000 TRM | 新規ノードへの初期融資額 |
 | `welcome_loan_interest` | 0% | 金利 |
 | `welcome_loan_term_hours` | 72 時間 | 返済期限 |
 | `welcome_loan_sybil_threshold` | 100 nodes | これを超える未認証ノードからの申請は拒否 |
@@ -93,7 +93,7 @@ effective_price = base_cu_per_token × demand_factor / supply_factor
 | `availability_yield_rate` | 0.1%/時 × reputation | 可用性に対する yield 率 |
 | `inactivity_decay_threshold_days` | 7 日 | 非活動とみなされる閾値 |
 | `inactivity_decay_rate` | 0.01/日 | uptime_score の減衰率 |
-| `inactivity_burn_threshold_days` | 90 日 | CU 焼却対象となる非活動期間 |
+| `inactivity_burn_threshold_days` | 90 日 | TRM 焼却対象となる非活動期間 |
 | `inactivity_burn_rate` | 1%/月 | 焼却率 |
 
 ---
@@ -103,8 +103,8 @@ effective_price = base_cu_per_token × demand_factor / supply_factor
 | パラメータ | 値 | 説明 |
 |----------|-----|------|
 | `claude_api_price_per_1m_tokens` | $15 | 為替レート計算の参照点 |
-| `forge_70b_cu_per_1m_tokens` | 4,000 CU | 同等の Forge 価格 |
-| `cu_usd_equilibrium_rate` | 約 $0.00375/CU | 上記から導出される均衡レート |
+| `forge_70b_cu_per_1m_tokens` | 4,000 TRM | 同等の Tirami 価格 |
+| `cu_usd_equilibrium_rate` | 約 $0.00375/TRM | 上記から導出される均衡レート |
 
 ---
 
@@ -112,17 +112,17 @@ effective_price = base_cu_per_token × demand_factor / supply_factor
 
 | パラメータ | 値 | 説明 |
 |----------|-----|------|
-| `cu_price_floor_usd` | 約 $0.000001/CU | 電力コスト由来の下限 |
-| `cu_price_ceiling_usd` | 約 $0.000132/CU | Mac Mini ($600) 自前運用コスト由来の上限 |
-| `mac_mini_annual_cu_capacity` | 約 5,000,000 CU/年 | Mac Mini M4 の年間生産可能 CU |
+| `cu_price_floor_usd` | 約 $0.000001/TRM | 電力コスト由来の下限 |
+| `cu_price_ceiling_usd` | 約 $0.000132/TRM | Mac Mini ($600) 自前運用コスト由来の上限 |
+| `mac_mini_annual_cu_capacity` | 約 5,000,000 TRM/年 | Mac Mini M4 の年間生産可能 TRM |
 
 ---
 
 ---
 
-## 10. 金融商品レイヤー (forge-bank / L2)
+## 10. 金融商品レイヤー (tirami-bank / L2)
 
-`forge-bank` crate (Rust, `crates/forge-bank/`) が参照する定数。
+`tirami-bank` crate (Rust, `crates/tirami-bank/`) が参照する定数。
 戦略、ポートフォリオ、先物、保険、リスクモデル、yield オプティマイザのシングルソース。
 
 ### 10.1 リスク許容度 (RiskTolerance)
@@ -163,7 +163,7 @@ short_pnl = −long_pnl
 |----------|-----|------|
 | `insurance_base_rate` | 0.02 | 基礎料率 (2%) |
 | `insurance_risk_premium` | 0.10 | 最大リスクプレミアム (10%) |
-| `insurance_min_premium` | 1 CU | 最小プレミアム (floor 後の保証) |
+| `insurance_min_premium` | 1 TRM | 最小プレミアム (floor 後の保証) |
 
 料率式:
 ```
@@ -190,17 +190,17 @@ concentration = max(lent_positions) / total_lent
 
 ---
 
-## 11. 自己改善レイヤー (forge-mind / L3)
+## 11. 自己改善レイヤー (tirami-mind / L3)
 
-`forge-mind` crate (Rust, `crates/forge-mind/`) が参照する定数。
-AutoAgent スタイルの自己改善ループが CU を消費する際のハード上限。
+`tirami-mind` crate (Rust, `crates/tirami-mind/`) が参照する定数。
+AutoAgent スタイルの自己改善ループが TRM を消費する際のハード上限。
 
-### 11.1 CU Budget (ハード上限)
+### 11.1 TRM Budget (ハード上限)
 
 | パラメータ | 値 | 説明 |
 |----------|-----|------|
-| `max_cu_per_cycle` | 5,000 CU | 1 改善サイクルで使える CU 上限 |
-| `max_cu_per_day` | 50,000 CU | 1 日あたりの CU 上限 |
+| `max_cu_per_cycle` | 5,000 TRM | 1 改善サイクルで使える TRM 上限 |
+| `max_cu_per_day` | 50,000 TRM | 1 日あたりの TRM 上限 |
 | `max_cycles_per_day` | 20 | 1 日あたりの改善サイクル上限 |
 | `budget_day_rollover_hours` | 24 | 日次リセット周期 |
 
@@ -210,7 +210,7 @@ AutoAgent スタイルの自己改善ループが CU を消費する際のハー
 |----------|-----|------|
 | `min_score_delta` | 0.01 | ベンチマークスコア改善の最小値 (これ未満は棄却) |
 | `min_roi_threshold` | 1.0 | 投資回収の最小比率 (cu_return / cu_invested) |
-| `roi_cu_per_score_unit` | 100,000 CU | スコア 1.0 改善あたりの想定 CU リターン換算 |
+| `roi_cu_per_score_unit` | 100,000 TRM | スコア 1.0 改善あたりの想定 TRM リターン換算 |
 
 判定ルール:
 ```
@@ -229,9 +229,9 @@ return roi >= min_roi_threshold
 
 ---
 
-## 12. エージェント市場レイヤー (forge-agora / L4)
+## 12. エージェント市場レイヤー (tirami-agora / L4)
 
-`forge-agora` crate (Rust, `crates/forge-agora/`) が参照する定数。
+`tirami-agora` crate (Rust, `crates/tirami-agora/`) が参照する定数。
 レピュテーション集約と capability マッチングのシングルソース。
 
 ### 12.1 レピュテーション重み (sum = 1.0)
@@ -248,7 +248,7 @@ return roi >= min_roi_threshold
 
 | パラメータ | 値 | 説明 |
 |----------|-----|------|
-| `volume_cap_cu` | 100,000 CU | volume スコアが 1.0 に飽和する閾値 |
+| `volume_cap_cu` | 100,000 TRM | volume スコアが 1.0 に飽和する閾値 |
 | `recency_half_life_ms` | 24 時間 | recency 半減期 |
 | `diversity_cap` | 10 | diversity が 1.0 に飽和するユニーク相手数 |
 | `consistency_min_trades` | 2 | これ未満は consistency = 0 |
@@ -284,15 +284,15 @@ composite   = match_quality_weight × reputation + match_cost_weight × price_sc
 
 ---
 
-## 13. サンプリングパラメータ (Phase 11, forge-node 推論レイヤー)
+## 13. サンプリングパラメータ (Phase 11, tirami-node 推論レイヤー)
 
-`crates/forge-node/src/api.rs` が参照する定数。
+`crates/tirami-node/src/api.rs` が参照する定数。
 OpenAI 互換サンプリングと Phase 12 のファンクションコーリングのシングルソース。
 
 ### 13.1 OpenAI 互換サンプリング
 
-これらのパラメータは `OpenAIChatRequest` から `forge-infer` エンジントレイトの
-llama.cpp サンプラーチェーンに転送される。トークン分布（= 1 リクエストあたりの CU 消費）
+これらのパラメータは `OpenAIChatRequest` から `tirami-infer` エンジントレイトの
+llama.cpp サンプラーチェーンに転送される。トークン分布（= 1 リクエストあたりの TRM 消費）
 に影響するが、台帳のコスト関数（`estimate_cost(tokens, 1, 1)`）には直接影響しない。
 
 | パラメータ | デフォルト | 範囲 | 意味 |
@@ -311,7 +311,7 @@ llama.cpp サンプラーチェーンに転送される。トークン分布（=
 |----------|---------|-----------|
 | `stream` | false | true の場合、レスポンスは `generate_streaming()` 経由の実トークン逐次 SSE チャンクとして送信される（Phase 11 で擬似ストリーミングから実装を刷新） |
 
-ストリーミングリクエストの CU 会計: 台帳のトレードレコードはストリーム完了後に書き込まれ、
+ストリーミングリクエストの TRM 会計: 台帳のトレードレコードはストリーム完了後に書き込まれ、
 `generate_streaming()` が報告する実際のトークン数を使用する。
 
 ### 13.3 ファンクションコーリング (Phase 12 A1)
@@ -419,15 +419,15 @@ llama.cpp サンプラーチェーンに転送される。トークン分布（=
 このファイルを参照する文書:
 - spec/forge-economics-spec-v0.1.md
 - spec/forge-economics-spec-v0.2.md (planned)
-- docs/02-money.md (CU 供給量)
+- docs/02-money.md (TRM 供給量)
 - docs/03-supply-demand.md (動的価格)
 - docs/05-banking.md (レンディング全般)
 - docs/06-exchange.md (為替)
 - docs/07-growth.md (収穫逓減 yield)
 
-このファイルを参照する Rust クレート (clearclown/forge workspace):
-- `crates/forge-ledger/src/lending.rs` — §3〜§7 (lending primitives)
-- `crates/forge-bank/src/*.rs` — §10 (strategies, futures, insurance, risk)
-- `crates/forge-mind/src/*.rs` — §11 (CU budget, ROI gates)
-- `crates/forge-agora/src/*.rs` — §12 (reputation, capability matching)
-- `crates/forge-node/src/api.rs` — §13 (sampling + streaming + tools)
+このファイルを参照する Rust クレート (clearclown/tirami workspace):
+- `crates/tirami-ledger/src/lending.rs` — §3〜§7 (lending primitives)
+- `crates/tirami-bank/src/*.rs` — §10 (strategies, futures, insurance, risk)
+- `crates/tirami-mind/src/*.rs` — §11 (TRM budget, ROI gates)
+- `crates/tirami-agora/src/*.rs` — §12 (reputation, capability matching)
+- `crates/tirami-node/src/api.rs` — §13 (sampling + streaming + tools)
