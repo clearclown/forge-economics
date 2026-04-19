@@ -1,0 +1,8 @@
+# Paper build byproducts (actual PDFs / .tex are committed, .log/.aux are not)
+papers/build/*.aux
+papers/build/*.log
+papers/build/*.toc
+papers/build/*.out
+
+# macOS
+.DS_Store

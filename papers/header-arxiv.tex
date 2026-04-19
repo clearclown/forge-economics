@@ -1,0 +1,56 @@
+% arXiv-targeted preamble for compute-standard.
+%
+% arXiv's TeX Live environment ships Latin Modern as a default font,
+% so we bind fontspec to that family directly. This preamble is
+% designed to compile on arXiv's build server without any system
+% font installation.
+
+% Fonts: pandoc's default xelatex preamble already loads fontspec
+% + unicode-math + `\usepackage{lmodern}` which sets Latin Modern
+% as the default body font. We don't re-set \setmainfont here
+% because that triggers fontspec's system-font lookup, which may
+% miss Latin Modern on machines where it's only in the TeX tree
+% (not the OS font cache). The default chain is fine for arXiv's
+% TeX Live server.
+
+% Glyph fallback for arrows / math operators. Even with LM Math
+% loaded, certain unicode characters appear inside code blocks
+% where math mode is not active.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{↔}{\ensuremath{\leftrightarrow}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+\newunicodechar{≠}{\ensuremath{\neq}}
+\newunicodechar{∼}{\ensuremath{\sim}}
+\newunicodechar{×}{\ensuremath{\times}}
+\newunicodechar{·}{\ensuremath{\cdot}}
+\newunicodechar{⁻}{\ensuremath{^{-}}}
+\newunicodechar{¹}{\ensuremath{^{1}}}
+\newunicodechar{²}{\ensuremath{^{2}}}
+\newunicodechar{³}{\ensuremath{^{3}}}
+\newunicodechar{⁴}{\ensuremath{^{4}}}
+\newunicodechar{⁵}{\ensuremath{^{5}}}
+\newunicodechar{⁶}{\ensuremath{^{6}}}
+\newunicodechar{⁷}{\ensuremath{^{7}}}
+\newunicodechar{⁸}{\ensuremath{^{8}}}
+\newunicodechar{⁹}{\ensuremath{^{9}}}
+\newunicodechar{⁰}{\ensuremath{^{0}}}
+\newunicodechar{–}{--}
+\newunicodechar{—}{---}
+\newunicodechar{…}{\ldots}
+
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  urlcolor=blue!60!black,
+  citecolor=blue!50!black,
+}
+
+\usepackage{fvextra}
+\fvset{breaklines=true,breakanywhere=true,fontsize=\small}
+
+\usepackage{authblk}

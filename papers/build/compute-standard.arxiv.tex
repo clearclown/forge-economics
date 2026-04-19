@@ -1,0 +1,1567 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+  11pt,
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+% arXiv-targeted preamble for compute-standard.
+%
+% arXiv's TeX Live environment ships Latin Modern as a default font,
+% so we bind fontspec to that family directly. This preamble is
+% designed to compile on arXiv's build server without any system
+% font installation.
+
+% Fonts: pandoc's default xelatex preamble already loads fontspec
+% + unicode-math + `\usepackage{lmodern}` which sets Latin Modern
+% as the default body font. We don't re-set \setmainfont here
+% because that triggers fontspec's system-font lookup, which may
+% miss Latin Modern on machines where it's only in the TeX tree
+% (not the OS font cache). The default chain is fine for arXiv's
+% TeX Live server.
+
+% Glyph fallback for arrows / math operators. Even with LM Math
+% loaded, certain unicode characters appear inside code blocks
+% where math mode is not active.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{↔}{\ensuremath{\leftrightarrow}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+\newunicodechar{≠}{\ensuremath{\neq}}
+\newunicodechar{∼}{\ensuremath{\sim}}
+\newunicodechar{×}{\ensuremath{\times}}
+\newunicodechar{·}{\ensuremath{\cdot}}
+\newunicodechar{⁻}{\ensuremath{^{-}}}
+\newunicodechar{¹}{\ensuremath{^{1}}}
+\newunicodechar{²}{\ensuremath{^{2}}}
+\newunicodechar{³}{\ensuremath{^{3}}}
+\newunicodechar{⁴}{\ensuremath{^{4}}}
+\newunicodechar{⁵}{\ensuremath{^{5}}}
+\newunicodechar{⁶}{\ensuremath{^{6}}}
+\newunicodechar{⁷}{\ensuremath{^{7}}}
+\newunicodechar{⁸}{\ensuremath{^{8}}}
+\newunicodechar{⁹}{\ensuremath{^{9}}}
+\newunicodechar{⁰}{\ensuremath{^{0}}}
+\newunicodechar{–}{--}
+\newunicodechar{—}{---}
+\newunicodechar{…}{\ldots}
+
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  urlcolor=blue!60!black,
+  citecolor=blue!50!black,
+}
+
+\usepackage{fvextra}
+\fvset{breaklines=true,breakanywhere=true,fontsize=\small}
+
+\usepackage{authblk}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={The Compute Standard: A Post-Marketing Economy for Autonomous AI Agents},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{The Compute Standard: A Post-Marketing Economy for Autonomous AI
+Agents}
+\author{}
+\date{2026-04-09}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\begin{quote}
+\textbf{Note on status (2026-04-19)}: This document is a \textbf{working
+draft / protocol design document}. It has \textbf{not been peer
+reviewed}, has not been submitted to arXiv, and has not appeared in any
+journal or conference. Sections that describe cryptographic primitives
+(Ed25519 dual-signatures) reflect working code; sections that describe
+future layers (zkML, ML-DSA, TEE attestation) describe design intent and
+are \textbf{not yet production-wired} --- see
+\texttt{README.md\ §\ Status\ Honesty} for the exact split. Please treat
+this file accordingly.
+\end{quote}
+
+\section{Abstract}\label{abstract}
+
+Contemporary AI service economies are structurally misaligned: the
+dominant monetization mechanism --- advertising and speculative token
+issuance --- captures value from AI systems without any relationship to
+the physical cost of computation. This paper argues that compute is the
+genuinely scarce resource in AI-native economies, and that compute
+itself should therefore serve as the medium of exchange. We introduce
+the \textbf{Compute Unit (TRM)}, defined as \(10^{10}\) floating-point
+operations of verified, useful inference, and describe the
+\textbf{Tirami protocol} --- a five-layer Rust implementation of a
+TRM-native economy for autonomous AI agents. Tirami's economic layer
+provides a deflationary, earnable-only, non-speculative currency
+anchored in thermodynamic reality via Ed25519 dual-signed Proof of
+Useful Work. The system implements dynamic market pricing with
+exponential moving average smoothing (\(\alpha = 0.3\)), a
+credit-scoring lending subsystem (credit score =
+\(0.3 \times \text{trade} + 0.4 \times \text{repayment} + 0.2 \times \text{uptime} + 0.1 \times \text{age}\)),
+collusion-resistant reputation gossip, and an autonomous
+self-improvement loop in which AI agents invest earned TRM to improve
+their own inference quality. A theory-to-implementation audit confirms
+43 parameter matches against the canonical specification with zero
+drift. Across 1,021 passing tests in four repositories, we demonstrate
+that autonomous AI agents can self-fund, self-improve, and transact
+without fiat currency, speculative tokens, or advertising revenue. The
+protocol constitutes a reference implementation of what we call the
+\textbf{Compute Standard}: compute is money, and useful work is its only
+source.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{1. Introduction}\label{introduction}
+
+\subsection{1.1 The Alignment Problem of Token
+Economies}\label{the-alignment-problem-of-token-economies}
+
+The prevailing economic model for AI services consists of either
+advertising-based monetization or speculative-token issuance. Both
+approaches share a fundamental misalignment: the medium of exchange is
+decoupled from the scarce resource actually being consumed. When OpenAI
+charges dollars per API token, or when Bittensor {[}10{]} distributes
+TAO based on validator scores, the unit of account bears no physical
+relationship to the computation performed. Speculative tokens introduce
+a second-order distortion: providers optimize for token price rather
+than inference quality, price volatility makes multi-hour computation
+jobs economically unpredictable, and KYC requirements on exchanges
+structurally exclude autonomous AI agents from participating as
+first-class economic actors {[}4, 11{]}.
+
+The advertising model imposes its own alignment failure. When an agent's
+outputs must be optimized for engagement rather than correctness ---
+because engagement drives ad revenue --- the agent's economic incentives
+are orthogonal to its epistemic function. This is not a governance
+problem amenable to better prompts; it is a structural consequence of
+the chosen medium of exchange.
+
+\subsection{1.2 Why ``Compute = Currency'' Is Different from
+Proof-of-Work
+Mining}\label{why-compute-currency-is-different-from-proof-of-work-mining}
+
+Bitcoin {[}1{]} established the principle that computation can serve as
+monetary proof of work, but Bitcoin mining consumes approximately
+100-150 TWh annually on SHA-256 hash computations whose output is
+economically inert --- the hash value serves no purpose beyond
+demonstrating that energy was expended. Frederic Soddy, writing in 1926
+{[}7{]}, described this as ``virtual wealth'': financial value detached
+from physical productive capacity. Bitcoin is digital gold with Soddy's
+critique intact.
+
+The Compute Standard proposed here is categorically different. A TRM is
+defined not as the output of an arbitrary hash function but as
+\(10^{10}\) FLOPs of \emph{useful} inference --- computation that
+produced a result that a counterparty requested and dual-signed as
+received. The monetary unit is therefore the productive act itself, not
+a side-effect of it. This distinction --- useful computation versus
+waste computation as monetary proof --- is the core theoretical
+contribution of Tirami and places TRM in a lineage traced through Soddy
+(1926), Fuller (1968), and Nakamoto (2008) {[}7, 8, 1{]} that reaches
+its completion only when the computation is both scarce and useful.
+
+\subsection{1.3 Contribution Summary and Paper
+Outline}\label{contribution-summary-and-paper-outline}
+
+This paper makes the following contributions:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Formal definition} of the Compute Unit as a thermodynamically
+  grounded monetary primitive (Section 2).
+\item
+  \textbf{Five-layer economic architecture} for autonomous AI agents,
+  from distributed inference substrate through agent marketplace
+  (Section 3).
+\item
+  \textbf{Dynamic pricing model} with supply-demand adjustment and
+  multi-tier pricing (Section 4).
+\item
+  \textbf{TRM lending subsystem} with credit scoring, pool constraints,
+  and circuit breakers (Section 5).
+\item
+  \textbf{Reputation consensus protocol} with collusion detection
+  (Section 6).
+\item
+  \textbf{Autonomous self-improvement loop} where agents invest earned
+  TRM in their own capability improvement (Section 7).
+\item
+  \textbf{Financial instrument layer} providing strategies, futures,
+  insurance, and risk-model VaR for TRM portfolios (Section 8).
+\item
+  \textbf{Post-marketing discovery} via reputation-scored capability
+  matching and NIP-90 integration (Section 9).
+\item
+  \textbf{Empirical results} from 1,021 passing tests across the
+  five-layer Rust implementation (Section 10).
+\end{enumerate}
+
+Sections 11-13 cover related work, limitations, and conclusion.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{2. The Compute Unit}\label{the-compute-unit}
+
+\subsection{\texorpdfstring{2.1 Definition: 1 TRM = \(10^{10}\) FLOPs of
+Verified
+Inference}{2.1 Definition: 1 TRM = 10\^{}\{10\} FLOPs of Verified Inference}}\label{definition-1-trm-1010-flops-of-verified-inference}
+
+A Compute Unit is defined as \(10^{10}\) floating-point operations of
+verified AI inference, as specified in the canonical parameter reference
+{[}5, §1{]}:
+
+\[\text{1 TRM} = 10^{10} \text{ FLOPs of useful inference}\]
+
+The word \emph{useful} is load-bearing. A TRM is not created by
+arbitrary computation; it is created by computation that satisfies a
+demand --- an inference request that a consumer node submitted, a
+provider node fulfilled, and both parties Ed25519-signed as a
+\texttt{TradeRecord} in the Tirami ledger. The dual signature is what
+distinguishes Proof of Useful Work from Proof of Work: it
+cryptographically encodes the bilateral nature of the value exchange.
+
+This definition anchors TRM in physical reality via Landauer's principle
+{[}2{]}: information processing requires irreversible energy expenditure
+of at least \(kT \ln 2\) per bit erased. The energy cost of inference is
+not optional or contractual --- it is thermodynamic. A TRM therefore
+represents a specific, irreversible expenditure of physical energy in
+service of a specific productive output. It cannot be manufactured from
+nothing, and it cannot be manufactured in excess of the network's
+physical compute capacity.
+
+\subsection{2.2 Why FLOPs Instead of
+Tokens}\label{why-flops-instead-of-tokens}
+
+The natural unit for metering AI inference is the output token, and
+Tirami uses tokens for pricing (see Section 4.2). However, TRM is
+defined in FLOPs rather than tokens for three reasons. First, FLOPs are
+hardware-independent: a token generated by a 70B-parameter model
+requires an order of magnitude more computation than a token from a
+1B-parameter model. Pricing by token alone conflates goods of different
+computational cost. Second, FLOPs are latency-independent: batch
+inference, streaming, and speculative decoding all produce tokens at
+different rates but the same computational cost per token at a given
+model size. Third, FLOPs provide a physical lower bound on energy
+expenditure that tokens alone cannot. The multi-tier pricing structure
+(Section 4.2) bridges the two units by mapping model size tiers to
+TRM-per-token rates.
+
+\subsection{2.3 Atomic Properties: Fungible, Non-Speculative,
+Earnable-Only}\label{atomic-properties-fungible-non-speculative-earnable-only}
+
+TRM has three atomic properties that distinguish it from all prior AI
+compute tokens:
+
+\textbf{Fungibility.} All TRM is identical. 1 TRM earned by running
+Llama on a Mac Mini is identical to 1 TRM earned by running DeepSeek on
+a data center GPU. The currency is not the hardware; it is the verified
+useful work.
+
+\textbf{Non-speculativity.} TRM is not listed on any exchange. It has no
+ticker symbol, no order book, and no fiat on-ramp in the core protocol.
+The only way to acquire TRM is to perform useful inference (earn) or
+borrow from the lending pool (credit). This removes the speculative
+attack surface that afflicts every existing compute marketplace.
+
+\textbf{Earnable-only issuance.} New TRM enters the economy through four
+controlled channels: inference trade settlement (transfers existing
+TRM), welcome loans (credit creation with Sybil resistance, see §3),
+availability yield (\(0.1\%/\text{hr} \times \text{reputation}\), see §7
+of {[}5{]}), and Bitcoin bridge deposits (external liquidity). There is
+no mining reward, no pre-mine, and no team allocation.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{3. Economic Architecture: Five
+Layers}\label{economic-architecture-five-layers}
+
+Tirami is structured as five distinct protocol layers, each implemented
+as a separate Rust crate within the \texttt{clearclown/tirami}
+workspace:
+
+\begin{verbatim}
+L4: Discovery     tirami-agora    — Agent marketplace, reputation, NIP-90, A2A
+L3: Intelligence  tirami-mind     — Autonomous self-improvement paid in TRM
+L2: Finance       tirami-bank     — Strategies, portfolios, futures, insurance
+L1: Economy       tirami-ledger   — TRM ledger, dual-signed trades, lending, pricing
+L0: Inference     mesh-llm       — Distributed LLM inference (nm-arealnormalman/mesh-llm)
+\end{verbatim}
+
+\subsection{3.1 L0 --- Distributed Inference Substrate
+(mesh-llm)}\label{l0-distributed-inference-substrate-mesh-llm}
+
+The inference layer is provided by the \texttt{mesh-llm} fork maintained
+at \texttt{nm-arealnormalman/mesh-llm}. It handles iroh QUIC transport
+with Noise protocol encryption, llama.cpp backend loading, pipeline
+parallelism, and MoE expert sharding. Tirami's contribution to this
+layer is the \texttt{/api/tirami/*} economic endpoints ported into the
+mesh-llm production runtime, plus TRM metering hooks in the inference
+pipeline. The mesh-llm fork carries 641 tests independently. The
+economic layer's protocol correctness is validated separately in the
+\texttt{clearclown/tirami} workspace.
+
+\subsection{3.2 L1 --- TRM Ledger, Dual-Signed Trades, Dynamic
+Pricing}\label{l1-trm-ledger-dual-signed-trades-dynamic-pricing}
+
+The economic engine is \texttt{tirami-ledger}. Every inference request
+that completes successfully generates a \texttt{TradeRecord} carrying:
+
+\begin{itemize}
+\tightlist
+\item
+  Provider \texttt{NodeId} (Ed25519 public key)
+\item
+  Consumer \texttt{NodeId}
+\item
+  TRM amount transferred
+\item
+  Token count
+\item
+  UNIX timestamp
+\item
+  Provider signature
+\item
+  Consumer signature
+\end{itemize}
+
+The dual-signature requirement means no unilateral TRM issuance is
+possible. Both parties must sign for the trade to be accepted into the
+gossip mesh. HMAC-SHA256 ledger integrity prevents retrospective
+tampering.
+
+\subsection{3.3 L2 --- Financial Instruments
+(tirami-bank)}\label{l2-financial-instruments-tirami-bank}
+
+\texttt{tirami-bank} implements a portfolio management layer with
+pluggable strategies (Conservative, Balanced, HighYield), futures
+contracts with zero-sum PnL guarantee, insurance policies, and a
+Value-at-Risk risk model with 99\% confidence level. These instruments
+allow nodes with TRM surplus to deploy it productively and nodes with
+TRM deficit to hedge against adverse market conditions. All constants
+are sourced from the canonical parameter specification {[}5, §10{]}.
+
+\subsection{3.4 L3 --- Autonomous Self-Improvement Paid in TRM
+(tirami-mind)}\label{l3-autonomous-self-improvement-paid-in-trm-tirami-mind}
+
+\texttt{tirami-mind} implements an AutoAgent-style improvement loop in
+which a running \texttt{TiramiMindAgent} periodically invokes a
+\texttt{CuPaidOptimizer} --- which submits real inference requests to a
+frontier model provider, records the cost as a \texttt{TradeRecord} on
+the ledger, and applies the resulting improvement to its own system
+prompt. TRM is therefore not only the output of inference but the input
+to capability improvement. This closes the self-improvement loop without
+any external funding mechanism.
+
+\subsection{3.5 L4 --- Post-Marketing Discovery via Reputation
+Aggregation
+(tirami-agora)}\label{l4-post-marketing-discovery-via-reputation-aggregation-tirami-agora}
+
+\texttt{tirami-agora} provides an agent marketplace where capability
+matching replaces advertising. Agents register their capabilities (model
+tier, domain, language, latency SLA) and the \texttt{CapabilityMatcher}
+ranks providers by composite score rather than by paid placement.
+Discovery is economically neutral --- no agent can purchase a higher
+ranking. NIP-90 {[}9{]} Data Vending Machine events are published to
+Nostr relays via a WebSocket publisher, enabling discovery by
+Nostr-native agents without requiring Tirami-specific client software.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{4. Dynamic Pricing and
+Deflation}\label{dynamic-pricing-and-deflation}
+
+\subsection{\texorpdfstring{4.1 Supply-Demand Dynamic Pricing (EMA
+Smoothing,
+\(\alpha = 0.3\))}{4.1 Supply-Demand Dynamic Pricing (EMA Smoothing, \textbackslash alpha = 0.3)}}\label{supply-demand-dynamic-pricing-ema-smoothing-alpha-0.3}
+
+Each node independently observes its local demand (request rate) and the
+network supply (active peer count) and computes an effective price:
+
+\[\text{effective\_price} = \text{base\_cu\_per\_token} \times \frac{\text{demand\_factor}}{\text{supply\_factor}}\]
+
+Raw demand and supply signals are smoothed via an exponential moving
+average with \(\alpha = 0.3\), corresponding to a half-life of
+approximately 30 minutes {[}5, §2{]}:
+
+\[P_t = \alpha \cdot P_{\text{raw}} + (1 - \alpha) \cdot P_{t-1}\]
+
+Price information propagates through the gossip network. Each node
+merges incoming prices with its own estimate. In the absence of a
+central order book, this gossip convergence achieves approximate
+Walrasian equilibrium {[}17{]} through distributed knowledge aggregation
+--- an implementation of Hayek's (1948) distributed price mechanism
+{[}15{]} in protocol form.
+
+\subsection{4.2 Multi-Tier Pricing}\label{multi-tier-pricing}
+
+Model size determines the TRM cost per output token {[}5, §2{]}:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+Tier & Parameter Count & TRM/token & Example models \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Small & \textless{} 3B & 1 & Qwen 2.5 0.5B \\
+Medium & 3B -- 14B & 3 & Qwen 3 8B \\
+Large & 14B -- 70B & 8 & DeepSeek V3 \\
+Frontier & \textgreater{} 70B & 20 & Llama 3.1 405B \\
+\end{longtable}
+}
+
+For Mixture-of-Experts (MoE) models, the active parameter count --- not
+the total parameter count --- determines the tier. A 30B-total /
+3B-active MoE model is priced at the Medium rate (3 TRM/token) because
+only 3B parameters are engaged per forward pass. This pricing reflects
+the actual compute cost rather than the nominal model size.
+
+\subsection{4.3 Deflation as the Network
+Matures}\label{deflation-as-the-network-matures}
+
+As hardware improves, the same physical energy produces more FLOPs per
+dollar. New nodes enter the network when the TRM-per-dollar return
+exceeds their energy costs. Increased supply drives down the effective
+price per TRM in USD terms. This is deflationary in the fiat-denominated
+sense, but not in the TRM-denominated sense: 1 TRM always purchases the
+same quantity of verified useful inference. The deflationary pressure
+therefore benefits consumers (cheaper inference) without devaluing the
+medium of exchange itself.
+
+\subsection{4.4 Physical Bounds: \$0.000001 Floor, \$0.000132
+Ceiling}\label{physical-bounds-0.000001-floor-0.000132-ceiling}
+
+The equilibrium rate anchors TRM to real-world cloud API pricing:
+Claude-class frontier inference at \$15/M tokens maps to approximately
+4,000 TRM/M tokens, yielding an equilibrium rate of approximately
+\$0.00375/TRM {[}5, §8{]}. Physical bounds constrain the range {[}5,
+§9{]}:
+
+\[\text{floor} \approx \$0.000001/\text{TRM} \quad \text{(electricity cost lower bound)}\]
+\[\text{ceiling} \approx \$0.000132/\text{TRM} \quad \text{(Mac Mini M4 self-hosting cost)}\]
+
+A Mac Mini M4 (\$600) operating continuously at full utilization
+produces approximately 5,000,000 TRM/year {[}5, §9{]}. Above the ceiling
+price, it becomes cheaper to run self-hosted inference than to purchase
+TRM from the network. This physical constraint prevents the kind of
+speculative price detachment that afflicts token-based compute markets.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{5. Credit, Lending, and Circuit
+Breakers}\label{credit-lending-and-circuit-breakers}
+
+\subsection{5.1 Credit Score}\label{credit-score}
+
+Every node in the Tirami network carries a credit score computed from
+its observed history {[}5, §4{]}:
+
+\[\text{credit} = 0.3 \cdot s_{\text{trade}} + 0.4 \cdot s_{\text{repayment}} + 0.2 \cdot s_{\text{uptime}} + 0.1 \cdot s_{\text{age}}\]
+
+The repayment component carries the highest weight (40\%) because loan
+repayment is the most direct signal of credit risk. The trade component
+(30\%) reflects the volume and consistency of productive participation
+in the network. Uptime (20\%) and account age (10\%) provide Sybil
+resistance --- a freshly created node cannot achieve a high credit score
+without sustained honest participation.
+
+New nodes begin with a cold-start credit score of 0.3 {[}5, §4{]}. The
+minimum score required to borrow is 0.2, providing a floor that prevents
+purely extractive participation. Nodes that repay their welcome loan
+within the 72-hour term receive a +0.1 bonus, bringing their score to
+0.4 --- the target for a fully bootstrapped participant.
+
+\subsection{5.2 Welcome Loan: 1,000 TRM, 0\% Interest, 72 Hours, Sybil
+Threshold
+100}\label{welcome-loan-1000-trm-0-interest-72-hours-sybil-threshold-100}
+
+The primary cold-start mechanism is the welcome loan {[}5, §3{]}: every
+new node may request a loan of 1,000 TRM at 0\% interest with a 72-hour
+repayment term. This replaces the flat free-tier grant used in earlier
+phases and creates a credit relationship rather than a gift ---
+establishing the borrower's first repayment record and incentivizing
+timely repayment via the credit score bonus.
+
+Sybil resistance is enforced by a network-wide threshold: if the number
+of unknown (unverified) nodes in the mesh exceeds 100 at the time of a
+welcome loan request, the request is rejected {[}5, §3{]}. This prevents
+an attacker from creating thousands of synthetic nodes to extract
+welcome loan TRM at scale.
+
+\subsection{5.3 Pool Constraints: 30\% Reserve, 3:1 LTV, 20\% Max Single
+Loan}\label{pool-constraints-30-reserve-31-ltv-20-max-single-loan}
+
+The lending pool operates under three hard constraints {[}5, §5{]}:
+
+\textbf{Minimum reserve ratio (30\%).} At most 70\% of pooled TRM may be
+outstanding as loans at any time. This yields a credit multiplier of at
+most 3.3×, deliberately lower than the fractional reserve banking norm
+(10x at 10\% reserve ratio) to reduce systemic risk.
+
+\textbf{Maximum loan-to-value ratio (3:1).} A borrower's outstanding
+loan principal may not exceed three times their contributed collateral.
+
+\textbf{Maximum single loan size (20\% of pool).} No single loan may
+exceed 20\% of total pool assets, preventing concentration risk from a
+single large borrower default.
+
+All loans are dual-signed \texttt{LoanRecord} structures with Ed25519
+signatures from both lender and borrower, gossip-propagated across the
+mesh, and stored in the ledger with HMAC-SHA256 integrity. Every node
+can independently verify any loan's validity.
+
+\subsection{5.4 Default Circuit Breaker: 10\%/hr Trigger, 10\%
+Collateral
+Burn}\label{default-circuit-breaker-10hr-trigger-10-collateral-burn}
+
+The lending system includes an automatic circuit breaker {[}5, §6{]}: if
+the network-wide default rate exceeds 10\% per hour (measured over a
+rolling one-hour window), all new lending is suspended until the rate
+falls below the threshold. This prevents a cascade of defaults from
+triggering a bank-run dynamic in the lending pool.
+
+When a loan defaults, 10\% of the borrower's posted collateral is burned
+(removed from circulation) as a deterrent {[}5, §6{]}. A velocity
+circuit breaker provides an additional control: if new loan issuance
+exceeds 50\% of pool balance within one hour, lending is also suspended.
+The governing principle is fail-safe: when in doubt, deny the loan.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{6. Reputation Consensus and Collusion
+Resistance}\label{reputation-consensus-and-collusion-resistance}
+
+\subsection{6.1 Local-First Reputation
+Computation}\label{local-first-reputation-computation}
+
+Reputation in Tirami is computed locally by each node from its own
+observed trade history {[}5, §12{]}. There is no central credit bureau.
+The reputation score is a weighted composite of four sub-scores:
+
+\[\text{reputation} = 0.4 \cdot s_{\text{vol}} + 0.3 \cdot s_{\text{rec}} + 0.2 \cdot s_{\text{div}} + 0.1 \cdot s_{\text{con}}\]
+
+where:
+
+\[s_{\text{vol}} = \min\!\left(1, \frac{\text{total\_cu}}{100{,}000}\right), \quad
+  s_{\text{rec}} = 0.5^{\,\text{age\_ms} / (24 \text{h in ms})}\]
+
+\[s_{\text{div}} = \min\!\left(1, \frac{\text{unique\_counterparties}}{10}\right), \quad
+  s_{\text{con}} = \max\!\left(0,\; 1 - \frac{\sigma_{\text{intervals}}}{\mu_{\text{intervals}}} / 2\right)\]
+
+The diversity component (\(s_{\text{div}}\)) saturates at 10 unique
+counterparties, incentivizing broad network participation rather than
+deep bilateral relationships. The consistency component
+(\(s_{\text{con}}\)) penalizes irregular trading patterns, which are a
+signature of wash-trading.
+
+\subsection{6.2 Gossip Consensus via Signed
+ReputationObservation}\label{gossip-consensus-via-signed-reputationobservation}
+
+Each node broadcasts \texttt{ReputationObservation} messages containing
+its locally computed reputation estimates for peers, signed with its
+Ed25519 key. Nodes that receive observations merge them using a
+\textbf{weighted median} where the weight is proportional to the
+observer's own reputation --- a node with low reputation has less
+influence on the consensus. A minimum observation weight of
+\texttt{MIN\_OBSERVATION\_WEIGHT\ =\ 5} observations is required before
+a peer's reputation can be updated, preventing trivial manipulation via
+small-network bootstrapping.
+
+\subsection{6.3 Collusion Detection}\label{collusion-detection}
+
+Three complementary collusion detectors run continuously {[}Phase 9,
+A5{]}:
+
+\textbf{Tight-cluster score.} If a node directs more than 20\% of its
+total TRM flow to a single counterparty, its trust penalty increases.
+Legitimate high-volume bilateral trades between specialized providers
+and consumers are expected to occur, but extreme concentration suggests
+wash trading.
+
+\textbf{Volume spike score.} The coefficient of variation (CV =
+\(\sigma / \mu\)) of inter-trade intervals is computed. A low CV ---
+implying mechanical, clock-driven trading --- increases the trust
+penalty. Human-like demand generates irregular intervals; programmatic
+wash trading tends to be metronomically regular.
+
+\textbf{Round-robin score.} A directed trade graph is constructed over a
+rolling time window. Tarjan's strongly connected components (SCC)
+algorithm identifies cycles --- e.g., A pays B, B pays C, C pays A ---
+which indicate circular trade schemes designed to manufacture repayment
+history without genuine productive exchange.
+
+\subsection{6.4 Trust Penalty}\label{trust-penalty}
+
+The trust penalty derived from collusion detection is bounded in
+\([0, 0.5]\) and subtracted from the node's effective reputation:
+
+\[\text{effective\_reputation} = \max(0,\; \text{reputation} - \text{trust\_penalty})\]
+
+The maximum penalty of 0.5 ensures that even a heavily penalized node
+retains some participation rights, preventing permanent exclusion that
+could be weaponized as a denial-of-service attack on legitimate nodes
+whose traffic patterns superficially resemble collusion.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{7. Autonomous Self-Improvement
+(tirami-mind)}\label{autonomous-self-improvement-tirami-mind}
+
+\subsection{7.1 Harness + MetaOptimizer +
+ImprovementCycleRunner}\label{harness-metaoptimizer-improvementcyclerunner}
+
+\texttt{tirami-mind} implements a three-component self-improvement loop.
+The \texttt{Harness} maintains a versioned system prompt and a
+\texttt{Benchmark} suite that scores the agent's performance on a
+held-out task set. The \texttt{MetaOptimizer} proposes modifications to
+the system prompt. The \texttt{ImprovementCycleRunner} executes one
+improvement cycle: benchmark current state, request a modification from
+the optimizer, benchmark the modified state, apply ROI gate (Section
+7.3), and commit or reject.
+
+A \texttt{TiramiMindAgent} wraps this loop with TRM budget enforcement
+and ledger integration, making the self-improvement process an economic
+actor that appears in the trade history.
+
+\subsection{7.2 CuBudget Hard Limits}\label{cubudget-hard-limits}
+
+The CuBudget enforces the following hard limits per-agent {[}5, §11{]}:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Parameter & Value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+max\_cu\_per\_cycle & 5,000 TRM \\
+max\_cu\_per\_day & 50,000 TRM \\
+max\_cycles\_per\_day & 20 cycles \\
+budget\_rollover & 24 hours \\
+\end{longtable}
+}
+
+These limits prevent a runaway improvement loop from draining the
+agent's entire TRM balance. The four-gate \texttt{can\_spend} check ---
+positive amount, within cycle limit, within daily limit, within daily
+cycle count --- must pass before any TRM is committed to an optimizer
+call.
+
+\subsection{7.3 ROI Gating}\label{roi-gating}
+
+Even a TRM-feasible improvement must pass an ROI gate before it is
+applied {[}5, §11{]}:
+
+\[\text{ROI} = \frac{\text{cu\_return\_estimate}}{\text{cu\_invested}}\]
+
+where \texttt{cu\_return\_estimate\ =\ score\_delta\ *\ 100,000}
+(100,000 TRM per unit of benchmark improvement). The gate accepts the
+improvement if and only if \(\text{ROI} \geq 1.0\) and
+\(\text{score\_delta} \geq 0.01\). A modification that costs 500 TRM but
+improves the benchmark score by only 0.004 points is rejected as
+economically unprofitable even if it is technically an improvement.
+
+\subsection{7.4 CuPaidOptimizer}\label{cupaidoptimizer}
+
+The production optimizer is \texttt{CuPaidOptimizer}, which submits the
+current system prompt and benchmark result to a frontier model provider
+(e.g., Claude 3.5 Sonnet) via the Anthropic Messages API and receives a
+proposed improvement. The frontier provider is represented in the ledger
+by a deterministic \texttt{NodeId} computed as
+\(\text{SHA-256}(\text{"frontier:" + model\_id})\). The TRM cost is
+recorded as a \texttt{TradeRecord} from the calling agent to this
+synthetic provider NodeId, making frontier-model calls fully visible in
+the economic accounting layer without requiring the frontier provider to
+run a Tirami node.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{8. Financial Instruments
+(tirami-bank)}\label{financial-instruments-tirami-bank}
+
+\subsection{8.1 Strategies: Conservative / HighYield /
+Balanced}\label{strategies-conservative-highyield-balanced}
+
+\texttt{tirami-bank} provides three pluggable lending strategies with
+risk multipliers {[}5, §10{]}:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1972}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2958}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2676}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2394}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Strategy
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Max Commit Fraction
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Reserve Threshold
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Risk Multiplier
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Conservative & 30\% of cash & Pool ≥ 60\% & 0.5 \\
+Balanced & dynamic & Pool ≥ 50\% & 0.8 \\
+HighYield & 50\% of cash base & Pool ≥ 40\% & 1.0 \\
+\end{longtable}
+}
+
+The Conservative strategy will not lend if the pool reserve ratio falls
+below 60\%, providing an additional safety margin above the protocol
+minimum of 30\%.
+
+\subsection{8.2 Futures: Zero-Sum PnL, 10\% Default
+Margin}\label{futures-zero-sum-pnl-10-default-margin}
+
+Futures contracts are zero-sum instruments over TRM price {[}5,
+§10.3{]}:
+
+\[\text{long\_pnl} = (\text{settlement\_price} - \text{strike\_price}) \times \text{notional}\]
+\[\text{short\_pnl} = -\text{long\_pnl}\]
+
+Default margin of 10\% is required at contract creation
+(\(\text{margin} \in (0, 1)\)). The zero-sum construction ensures that
+futures do not create or destroy TRM --- they redistribute it between
+the long and short counterparties based on realized price movement.
+
+\subsection{8.3 Insurance: Rate = 0.02 + (1 - credit\_score) ×
+0.10}\label{insurance-rate-0.02-1---credit_score-0.10}
+
+TRM loan insurance is priced as a function of the borrower's credit
+score {[}5, §10.4{]}:
+
+\[\text{rate} = 0.02 + (1 - \text{credit\_score}) \times 0.10\]
+\[\text{premium} = \max(1\;\text{TRM},\; \lfloor\text{coverage} \times \text{rate}\rfloor)\]
+
+A borrower with a perfect credit score (1.0) pays the 2\% base rate. A
+borrower with no credit history (0.0) pays the maximum 12\% rate. The 1
+TRM minimum premium prevents zero-cost insurance on trivially small
+loans.
+
+\subsection{\texorpdfstring{8.4 RiskModel VaR 99\%: \(2.33\sigma\)
+Bernoulli Loss
+Model}{8.4 RiskModel VaR 99\%: 2.33\textbackslash sigma Bernoulli Loss Model}}\label{riskmodel-var-99-2.33sigma-bernoulli-loss-model}
+
+The \texttt{RiskModel} computes a portfolio-level Value at Risk at the
+99\% confidence level using an independent Bernoulli loss model {[}5,
+§10.5{]}:
+
+\[\text{expected\_loss} = \lfloor\text{total\_lent} \times d \times \text{lgd}\rfloor\]
+
+\[\text{std\_dev} = \text{lgd} \times \sqrt{\sum_i L_i^2 \cdot d \cdot (1-d)}\]
+
+\[\text{VaR}_{99} = \lfloor\text{expected\_loss} + 2.33 \times \text{std\_dev}\rfloor\]
+
+where \(d = 0.02\) (annual default rate), \(\text{lgd} = 0.50\) (loss
+given default), and the 2.33 multiplier is the 99th percentile z-score
+of the standard normal distribution. The independence assumption is
+conservative in the presence of correlated defaults (network partition
+events), but provides an analytically tractable baseline.
+
+\subsection{8.5 YieldOptimizer: Trial Run → Risk Cap Check →
+Commit}\label{yieldoptimizer-trial-run-risk-cap-check-commit}
+
+The \texttt{YieldOptimizer} implements a three-stage optimization loop:
+(1) trial-run the proposed allocation to estimate yield, (2) check the
+resulting portfolio against the risk budget (VaR constraint), and (3)
+commit only if the risk cap is not breached. This prevents yield-chasing
+strategies from inadvertently violating the portfolio's risk tolerance.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{9. Post-Marketing Agent Discovery
+(tirami-agora)}\label{post-marketing-agent-discovery-tirami-agora}
+
+\subsection{9.1 Capability Matching with Composite
+Score}\label{capability-matching-with-composite-score}
+
+The \texttt{CapabilityMatcher} in \texttt{tirami-agora} ranks providers
+using {[}5, §12.3{]}:
+
+\[\text{composite} = 0.6 \times \text{reputation} + 0.4 \times \text{price\_score}\]
+
+\[\text{price\_score} = \max\!\left(0,\; 1 - \frac{\text{cu\_per\_token}}{\text{tier.base} \times 4}\right)\]
+
+Hard filters apply before the composite score: tier must match if
+specified; TRM per token must not exceed the query's
+\texttt{max\_cu\_per\_token}; model name must match any provided fnmatch
+pattern. Only providers passing all hard filters enter the composite
+ranking. The result is that providers compete on their combination of
+reputation and price --- not on their advertising spend.
+
+\subsection{9.2 NIP-90 / A2A Integration}\label{nip-90-a2a-integration}
+
+Tirami publishes capability announcements to Nostr {[}9{]} via
+well-formed kind-5050 (job request), kind-6050 (job result), and
+kind-31990 (provider announcement) events. A production
+\texttt{NIP90WebsocketPublisher} connects to configurable relay
+endpoints via \texttt{tokio-tungstenite} and publishes events in
+real-time as agents register and trades complete. Google A2A protocol
+headers (TRM payment extension) are planned for Phase 11 to enable
+interoperability with non-Nostr agent frameworks.
+
+\subsection{9.3 Why This Replaces
+Advertising}\label{why-this-replaces-advertising}
+
+Advertising monetizes attention by making discovery contingent on
+payment to a platform. The capability matching model in
+\texttt{tirami-agora} makes discovery contingent solely on demonstrated
+performance (reputation) and price. An agent with a high reputation
+score earned through consistent, high-quality inference provision will
+appear at the top of search results regardless of whether it has ever
+paid for placement. The economic incentive is therefore aligned with the
+epistemic function: the agents that are genuinely most useful are the
+agents that are most discoverable. This is the post-marketing property
+claimed in the paper's title.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{10. Implementation and Empirical
+Results}\label{implementation-and-empirical-results}
+
+\subsection{10.1 Five-Layer Architecture in
+Rust}\label{five-layer-architecture-in-rust}
+
+The Tirami ecosystem is implemented across four active repositories:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1061}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2576}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1061}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.5303}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Layer
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Crate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Tests
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Key primitive
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+L0 & mesh-llm & 641 & Distributed inference \\
+L1 & tirami-ledger & 89+ & TRM ledger + lending \\
+L2 & tirami-bank & 53 & \texttt{PortfolioManager.tick()} \\
+L3 & tirami-mind & 56 & \texttt{TiramiMindAgent.improve()} \\
+L4 & tirami-agora & 42 & \texttt{Marketplace.find()} \\
+\end{longtable}
+}
+
+The \texttt{clearclown/tirami} workspace contains 337 passing tests
+across the L1-L4 crates. The \texttt{nm-arealnormalman/mesh-llm} fork
+contains 641 tests including 45 new \texttt{/api/tirami/*} endpoint
+tests added during Phase 9. Total test count across all repositories:
+1,021 passing.
+
+The Rust implementation uses edition 2024 with resolver v2. The economic
+layer is intentionally decoupled from the inference layer:
+\texttt{tirami-ledger} has no dependency on \texttt{tirami-infer} or
+\texttt{tirami-net}. This decoupling ensures that the economic protocol
+can be validated independently of the inference implementation and that
+the inference layer can be replaced (as it was when mesh-llm superseded
+the initial \texttt{tirami-infer} crate) without affecting the economic
+semantics.
+
+\subsection{10.2 End-to-End Autonomous Agent
+Loop}\label{end-to-end-autonomous-agent-loop}
+
+The five layers compose into a complete autonomous agent loop, executed
+without human intervention:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Bootstrap:} New node requests welcome loan (1,000 TRM, 0\%
+  interest, 72hr term).
+\item
+  \textbf{Earn:} Node provides inference via mesh-llm; each completion
+  records a dual-signed \texttt{TradeRecord}; TRM balance accumulates.
+\item
+  \textbf{Finance:} \texttt{PortfolioManager.tick()} evaluates current
+  strategy; lends surplus TRM to pool at market rate; adjusts allocation
+  within risk budget.
+\item
+  \textbf{Discover:} \texttt{Marketplace.find()} selects optimal
+  inference provider for its own agent-to-agent tasks based on composite
+  reputation + price score.
+\item
+  \textbf{Improve:} \texttt{TiramiMindAgent.improve()} invokes
+  \texttt{CuPaidOptimizer}; frontier model call is made via Anthropic
+  API; result is evaluated by ROI gate; if accepted, system prompt is
+  updated and TRM cost is recorded as a \texttt{TradeRecord}.
+\item
+  \textbf{Repay:} On repayment of welcome loan, credit score advances
+  from 0.3 to 0.4; node becomes eligible for larger loans at competitive
+  interest rates.
+\end{enumerate}
+
+This loop runs entirely within the protocol. No human operator needs to
+approve any step. No fiat currency is required. No speculative token
+purchase is necessary.
+
+\subsection{10.3 Theory-Implementation
+Audit}\label{theory-implementation-audit}
+
+A formal audit of the canonical parameter specification {[}5{]} against
+the Rust implementation was conducted in Phase 9:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{43 parameters match} (spec value equals code constant)
+\item
+  \textbf{0 parameters in drift} (previously 3 drift items, all
+  corrected)
+\item
+  \textbf{2 parameters implicit} (EMA alpha coded as \(\alpha = 0.3\);
+  consistency minimum coded as \texttt{CONSISTENCY\_MIN\_TRADES\ =\ 2};
+  both present in code, not yet in spec §2)
+\item
+  \textbf{3 parameters reference-only} (§8/§9 cloud API anchors;
+  intentionally not enforced in code)
+\end{itemize}
+
+The audit report is maintained at \texttt{docs/THEORY-AUDIT.md} in the
+\texttt{clearclown/tirami} repository and updated with each phase.
+
+\subsubsection{10.5 Phase 11: Drop-in OpenAI Compatibility
+(2026-04-09)}\label{phase-11-drop-in-openai-compatibility-2026-04-09}
+
+Between Phase 10 close-out and the v0.3 deployment report, a
+compatibility audit identified five remaining gaps that prevented Tirami
+from serving as a drop-in replacement for llama-server, mesh-llm, or
+Ollama in OpenAI-compatible clients. Phase 11 resolved all five.
+
+\textbf{1. Real token-by-token streaming.} The original SSE handler
+buffered the entire completion, then emitted a single batch of
+\texttt{chat.completion.chunk} events. Phase 11 replaced this with a
+\texttt{tokio::task::spawn\_blocking} that drives the llama.cpp
+inference loop on a dedicated OS thread while streaming token fragments
+back through an \texttt{mpsc::channel} to the Axum response body. Each
+chunk now arrives with visible inter-arrival latency
+(\textasciitilde2--4 ms on Apple Silicon Metal), matching the behavior
+expected by streaming-aware clients such as the OpenAI Python SDK and
+Cursor.
+
+\textbf{2. Nucleus and top-k sampling.} The \texttt{top\_p} and
+\texttt{top\_k} fields on \texttt{OpenAIChatRequest} were parsed but
+forwarded as \texttt{None} to llama.cpp. The sampler chain now uses
+\texttt{LlamaSampler::chain\_simple({[}top\_k,\ top\_p,\ temp,\ dist{]})}
+so both parameters are honored. The canonical values and their semantics
+are specified in {[}6, §13.1{]}.
+
+\textbf{3. Accurate prompt token counts.} The old implementation used
+\texttt{(prompt.len()\ /\ 4).max(1)} --- a character-count approximation
+--- producing 30--50\% drift in \texttt{usage.prompt\_tokens} relative
+to the true subword token count. Phase 11 replaced this with a real
+tokenizer call via \texttt{engine.tokenize(\&prompt)}, making the
+reported \texttt{usage} object accurate enough to drive per-request TRM
+accounting reliably.
+
+\textbf{4. Model name in responses.} The fallback identifier
+\texttt{"tirami-model"} was changed to \texttt{"forge-no-model"},
+allowing clients to distinguish ``a model is loaded but its registry
+name is not configured'' from ``no model is loaded at all''. The actual
+model name from the registry (e.g.,
+\texttt{"SmolLM2-135M-Instruct-Q4\_K\_M"}) is reported when available.
+
+\textbf{5. Auto-download from a single flag.} The
+\texttt{tirami\ node\ -m\ \textless{}name\textgreater{}} command
+previously required both \texttt{-\/-model} and \texttt{-\/-tokenizer}
+as local file paths and never invoked the HuggingFace model registry.
+Phase 11 aligned its behavior with
+\texttt{tirami\ chat\ -m\ \textless{}name\textgreater{}}: a bare
+registry name (e.g., \texttt{smollm2:135m}) now triggers auto-download
+from the built-in registry, identical to the chat subcommand workflow.
+
+\textbf{Empirical validation (2026-04-09).} Phase 11 was validated with
+SmolLM2-135M (q4\_k\_m quantization, ≈98 MB) on Apple Silicon Metal with
+31/31 transformer layers offloaded to GPU. Three end-to-end chat
+completions were executed and charged 48 TRM total to the welcome-loan
+balance (ledger state: \texttt{contributed=48},
+\texttt{effective\_balance=1048}). The Prometheus \texttt{/metrics}
+endpoint reported
+\texttt{tirami\_cu\_contributed\_total\{node\_id="0000..."\}\ 48} and
+\texttt{tirami\_trade\_count\_total\ 3} simultaneously. The Bitcoin
+OP\_RETURN anchor at \texttt{mainnet} produced a 40-byte payload
+\texttt{6a284652474501000000...} that is broadcast-ready for use as an
+immutable ledger checkpoint. Full methodology is documented in the
+companion deployment report {[}forge-v0.3-deployment.md{]}.
+
+\subsection{10.4 Production Hardening (Phase 9 and
+10)}\label{production-hardening-phase-9-and-10}
+
+Phase 9 added the following production capabilities:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Persistent L2/L3/L4 state:} \texttt{BankServices},
+  \texttt{Marketplace}, and \texttt{TiramiMindAgent} survive process
+  restarts via serde-serialized state files.
+\item
+  \textbf{Ed25519-signed reputation gossip:}
+  \texttt{ReputationObservation} wire messages carry cryptographic
+  signatures; nodes reject unsigned or invalid-signature observations.
+\item
+  \textbf{Prometheus metrics export:} Collusion detection scores, TRM
+  flow rates, lending pool utilization, and reputation distributions are
+  exported as OpenMetrics-format counters and gauges.
+\item
+  \textbf{Bitcoin OP\_RETURN anchoring:} Merkle roots of trade history
+  batches are optionally anchored to the Bitcoin blockchain via
+  OP\_RETURN outputs, providing an immutable audit trail for high-stakes
+  deployments.
+\item
+  \textbf{Real NIP-90 WebSocket publish:} Capability announcements and
+  job completions are published to live Nostr relays as the events
+  occur, not merely constructed in memory.
+\item
+  \textbf{forge-mesh CI:} GitHub Actions workflow runs
+  \texttt{cargo\ test} on every push to the mesh-llm fork, preventing
+  economic protocol regressions from inference layer changes.
+\end{itemize}
+
+\subsubsection{10.6 Phase 12: Research-Frontier
+Scaffolds}\label{phase-12-research-frontier-scaffolds}
+
+Phase 12 (in progress as of the v0.1 preprint) adds scaffolded
+infrastructure for four frontier research directions without committing
+to specific cryptographic or training implementations. Shipping typed
+scaffolds now establishes a compilation boundary against which real
+backends can be developed independently without breaking the economic
+layer's API stability.
+
+\textbf{zkML verification} (\texttt{tirami\_ledger::zk}). A
+\texttt{ProofVerifier} trait and \texttt{ProofOfInference} struct allow
+a real ezkl {[}16{]}, risc0, or halo2 backend to be plugged in without
+API changes. The \texttt{MockVerifier} accepts all proofs and is used in
+unit tests to validate the surrounding economic machinery before any
+zero-knowledge proving system is integrated. When a real verifier is
+present, a verified inference proof can replace or supplement the
+Ed25519 dual-signature as the Proof of Useful Work, removing the
+bilateral trust requirement between counterparties.
+
+\textbf{Federated training} (\texttt{tirami\_mind::federated}). A
+\texttt{GradientContribution} struct records a node's contribution to a
+shared training round, a \texttt{FederatedRound} aggregates
+contributions from participating nodes using weighted averaging (weight
+proportional to loss improvement per TRM spent), and the aggregated
+model delta is applied and recorded as a \texttt{TradeRecord}. Nodes are
+rewarded in TRM proportional to their gradient efficiency. This extends
+TRM accounting from inference to distributed fine-tuning, allowing the
+same economic layer that governs inference trading to govern collective
+model improvement.
+
+\textbf{BitVM optimistic verification} (\texttt{tirami\_ledger::bitvm}).
+A \texttt{StakedClaim} struct records a node's assertion that a
+particular inference sequence was computed correctly, backed by a TRM
+stake. A \texttt{FraudProofVerifier} trait allows disputes to be
+escalated during a configurable challenge window (default 2016 Bitcoin
+blocks ≈ 14 days). If no successful fraud proof is submitted during the
+window, the claim is finalized and the stake is returned. This design
+follows the BitVM optimistic computation model {[}18{]} and enables
+trustless BTC↔TRM bridges without a Bitcoin soft fork.
+
+\textbf{Function calling} (Phase 12 A1,
+\texttt{crates/tirami-node/src/api.rs}). OpenAI-format \texttt{tools}
+and \texttt{tool\_choice} fields are parsed from
+\texttt{OpenAIChatRequest} and the tool definitions are injected into
+the system prompt via a model-agnostic template. The model's output is
+scanned for
+\texttt{\textless{}tool\_call\textgreater{}\{...\}\textless{}/tool\_call\textgreater{}}
+markers; when found, the response is transformed into
+\texttt{choices{[}0{]}.message.tool\_calls} with
+\texttt{finish\_reason:\ "tool\_calls"}, matching the OpenAI wire
+format. Canonical parameter values for the function calling interface
+are defined in {[}6, §13.3{]}.
+
+All four Phase 12 components are \emph{scaffolds}: the trait and type
+definitions are complete and unit-tested, but the cryptographic
+heavy-lifting (actual zkML circuits, BitVM covenants, gradient
+computation engines) is deferred to Phase 13+. This phasing allows the
+economic layer's interface contracts to stabilize before the
+computationally expensive backends are committed.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{11. Related Work}\label{related-work}
+
+\subsection{11.1 Proof-of-Work Mining}\label{proof-of-work-mining}
+
+Satoshi Nakamoto's Bitcoin {[}1{]} established that computation can
+serve as unforgeable monetary proof. Tirami inherits this insight but
+diverges on the most important point: the computation that creates
+Bitcoin (SHA-256 hashing) produces no useful output. Approximately
+100-150 TWh per year is consumed to produce a ledger entry. TRM is
+created by inference computation that simultaneously produces its own
+economic justification --- the counterparty's response. The distinction
+is not incidental; it is the reason TRM can be the medium of exchange in
+an AI economy where computation is already being demanded for its own
+sake.
+
+\subsection{11.2 Bittensor, Akash, Render, and Other Compute
+Markets}\label{bittensor-akash-render-and-other-compute-markets}
+
+Bittensor {[}10{]} is the most theoretically adjacent project: it
+creates a market for AI inference by distributing TAO tokens to miners
+based on validator scores. However, TAO is listed on exchanges and
+therefore subject to speculative price movements (exceeding 50\% daily
+volatility in observed periods). Validator gaming --- miners optimizing
+for validator score rather than inference quality --- has been
+documented {[}11{]}. Akash {[}11{]} uses a Burn-Mint Equilibrium
+mechanism for GPU spot market pricing in AKT tokens. Render allocates
+RENDER tokens for GPU rendering workloads. io.net aggregates GPU
+capacity with IO token compensation. None of these protocols supports
+AI-native borrowing, credit scoring, or self-improvement loops that
+consume the compute currency. None eliminates speculative price exposure
+for the computing agent.
+
+\subsection{11.3 AutoAgent / Voyager: Self-Improving Agents Without
+Economic
+Substrate}\label{autoagent-voyager-self-improving-agents-without-economic-substrate}
+
+AutoAgent-style systems {[}12{]} and Minecraft-learning agents like
+Voyager demonstrate that LLM-based agents can execute self-directed
+improvement loops. These systems implicitly consume compute (API
+credits) but have no formal economic protocol: the compute is paid for
+externally by a human operator and does not appear in the agent's own
+accounting. Tirami makes the economic substrate explicit --- the agent
+earns TRM by providing inference, budgets TRM for improvement, and
+records every improvement-cycle cost as a ledger entry. Self-improvement
+is not a capability demonstration; it is an economic transaction.
+
+\subsection{11.4 Bitcoin as Value
+Storage}\label{bitcoin-as-value-storage}
+
+Bitcoin {[}1{]} functions as an optional value store and fiat-to-TRM
+bridge within the Tirami ecosystem but is not part of the core protocol.
+The \texttt{tirami-lightning} crate provides a TRM-to-Lightning-invoice
+settlement path for nodes that wish to realize TRM earnings as Bitcoin.
+This is an optional adapter, not a dependency. Bitcoin's fixed supply
+and volatility make it poorly suited as a medium of exchange for
+high-frequency micro-transactions (inference calls complete in
+milliseconds); TRM's elastic supply and computation-anchored value make
+it well-suited.
+
+\subsection{11.5 Nostr NIP-90: Discovery Substrate We Build
+On}\label{nostr-nip-90-discovery-substrate-we-build-on}
+
+Nostr {[}9{]} provides a censorship-resistant, cryptographically
+authenticated publish-subscribe infrastructure. NIP-90 Data Vending
+Machines define a standard event schema for AI job requests and
+responses. Tirami builds on this standard by publishing capability
+announcements and job completions as NIP-90 events, enabling
+Nostr-native discovery. The economic layer (TRM payment, reputation
+scoring, lending) is Tirami's contribution; Nostr provides the transport
+and schema.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{12. Limitations and Future
+Work}\label{limitations-and-future-work}
+
+\subsection{12.1 No Fiat On-Ramp in the Core Protocol
+(Intentional)}\label{no-fiat-on-ramp-in-the-core-protocol-intentional}
+
+Tirami deliberately provides no fiat-to-TRM conversion in the core
+protocol. The Lightning bridge allows TRM-to-BTC settlement for nodes
+wishing to realize earnings, and the \texttt{create\_deposit()} function
+accepts BTC for TRM purchase, but there is no credit card, bank
+transfer, or stablecoin on-ramp. This is a deliberate design constraint:
+adding fiat on-ramps would reintroduce the speculative attack surface
+that the earnable-only property eliminates. Applications requiring fiat
+liquidity are expected to use the TRM-to-BTC bridge as an adapter layer.
+
+\subsection{12.2 Reputation Consensus Requires Initial Bootstrap
+Trust}\label{reputation-consensus-requires-initial-bootstrap-trust}
+
+The weighted-median reputation merge requires that a node accumulate
+observations from at least \texttt{MIN\_OBSERVATION\_WEIGHT\ =\ 5} peers
+before reputation updates take effect. In a nascent network with few
+participants, this threshold can be difficult to satisfy and the initial
+reputation assignments (default 0.5) may not reflect actual node
+quality. The welcome loan Sybil threshold (100 unknown nodes triggers
+rejection) provides some protection, but the cold-start problem in
+reputation is not fully resolved.
+
+\subsection{12.3 Collusion Detection Is Advisory, Not
+Enforced}\label{collusion-detection-is-advisory-not-enforced}
+
+The tight-cluster, volume-spike, and round-robin collusion detectors
+produce a trust penalty in \([0, 0.5]\) that reduces a node's effective
+reputation. They do not, at present, trigger automatic suspension or TRM
+confiscation. A sophisticated colluder who keeps the trust penalty below
+0.3 may still participate profitably. Phase 11 work includes escalating
+collusion penalties to automatic lending suspension and considering
+stake-slashing mechanisms for confirmed collusion rings.
+
+\subsection{12.4 CuPaidOptimizer Currently Supports Only Anthropic
+Messages
+API}\label{cupaidoptimizer-currently-supports-only-anthropic-messages-api}
+
+The \texttt{CuPaidOptimizer} submits improvement requests using the
+Anthropic Messages API format. Agents running in environments where
+Anthropic API access is unavailable fall back to the
+\texttt{EchoOptimizer} (which returns the input unchanged, incurring no
+TRM cost but achieving no improvement). Support for OpenAI-compatible
+API endpoints, local Ollama instances, and mesh-llm's own inference
+endpoint is planned for Phase 11.
+
+\subsection{12.5 Compute Standard v0.2 Roadmap (Phase
+11+)}\label{compute-standard-v0.2-roadmap-phase-11}
+
+Future protocol development targets:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{zkML proofs:} Replace the dual-signature Proof of Useful Work
+  with zero-knowledge proofs of inference correctness, removing the
+  trust assumption between bilateral counterparties.
+\item
+  \textbf{Federated training:} Extend the TRM accounting model from
+  inference to distributed fine-tuning, allowing nodes to earn TRM for
+  contributing gradients to shared training runs.
+\item
+  \textbf{BitVM computation verification:} Use the BitVM framework to
+  verify TRM claims on the Bitcoin settlement layer without a soft fork,
+  enabling trustless BTC↔TRM bridges.
+\item
+  \textbf{Cross-architecture support:} Extend compute capacity
+  measurement to NVIDIA CUDA, AMD ROCm, and RISC-V inference backends
+  via the mesh-llm hardware abstraction layer.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{13. Conclusion}\label{conclusion}
+
+We have presented the Compute Standard: a formal economic architecture
+in which useful AI inference is the sole monetary primitive. The Compute
+Unit, defined as \(10^{10}\) FLOPs of verified useful inference and
+issued only by dual-signed Proof of Useful Work, resolves the alignment
+problem of token-based AI economies by making the medium of exchange
+identical to the scarce resource being traded. The five-layer Tirami
+protocol --- implemented in Rust with 1,021 passing tests across four
+repositories --- demonstrates that autonomous AI agents can earn, save,
+borrow, repay, self-improve, and transact with each other without human
+authorization, fiat currency, speculative tokens, or advertising
+revenue. The protocol is production-hardened with persistent state,
+signed reputation gossip, collusion detection, Prometheus metrics,
+Bitcoin anchoring, and live NIP-90 relay publishing.
+Theory-to-implementation parity is formally audited with 43 parameter
+matches and zero drift. Compute is the natural currency for a
+civilization increasingly driven by machines. Tirami is the reference
+implementation of that idea.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Acknowledgments}\label{acknowledgments}
+
+The authors thank the mesh-llm community (nm-arealnormalman and
+contributors) for the distributed inference substrate on which Tirami's
+economic layer runs; the \texttt{ed25519-dalek} Rust crate maintainers
+for the cryptographic primitives underlying dual-signed trade records
+and reputation gossip; the Nostr community for the NIP-90 Data Vending
+Machine specification; and the AutoAgent research community for
+establishing the conceptual foundations of autonomous agent
+self-improvement loops.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{References}\label{references}
+
+{[}1{]} Satoshi Nakamoto. ``Bitcoin: A Peer-to-Peer Electronic Cash
+System.'' 2008. https://bitcoin.org/bitcoin.pdf
+
+{[}2{]} R. Landauer. ``Dissipation and Heat Generation in the Computing
+Process.'' \emph{IBM Journal of Research and Development},
+5(3):183--191, 1961.
+
+{[}3{]} Robert Ayres and Benjamin Warr. \emph{The Economic Growth
+Engine: How Energy and Work Drive Material Prosperity}. Edward Elgar
+Publishing, 2009.
+
+{[}4{]} Yuma Rao. ``Bittensor: A Peer-to-Peer Intelligence Market.''
+Bittensor Whitepaper, 2021. https://bittensor.com/whitepaper
+
+{[}5{]} clearclown. ``Tirami Economics Parameter Specification v0.2.''
+https://github.com/clearclown/tirami-economics/blob/main/spec/parameters.md,
+2026.
+
+{[}6{]} clearclown. ``Tirami Economics Specification v0.2.''
+https://github.com/clearclown/tirami-economics/blob/main/spec/forge-economics-spec-v0.2.md,
+2026.
+
+{[}7{]} Frederick Soddy. \emph{Wealth, Virtual Wealth and Debt.} George
+Allen \& Unwin, 1926.
+
+{[}8{]} R. Buckminster Fuller. \emph{Operating Manual for Spaceship
+Earth.} Southern Illinois University Press, 1968.
+
+{[}9{]} Nostr Protocol. ``NIP-01: Basic protocol flow description.''
+2021. https://github.com/nostr-protocol/nostr/blob/master/01.md NIP-90:
+Data Vending Machines.
+https://github.com/nostr-protocol/nostr/blob/master/90.md
+
+{[}10{]} clearclown. ``clearclown/tirami: Tirami Protocol Core.'' GitHub
+repository, 2026. https://github.com/clearclown/tirami
+
+{[}11{]} Akash Network. ``Akash: A Decentralized Cloud Computing
+Marketplace.'' Technical whitepaper, 2021.
+https://akash.network/whitepaper
+
+{[}12{]} Zihao Wang, Shaofei Cai, Guanzhou Chen, Anji Liu, Xiaojian Ma,
+and Yitao Liang. ``Voyager: An Open-Ended Embodied Agent with Large
+Language Models.'' \emph{arXiv:2305.16291}, 2023.
+
+{[}13{]} Lihu et al.~``A Proof of Useful Work for Artificial
+Intelligence on the Blockchain.'' \emph{arXiv:2001.09244}, 2020.
+
+{[}14{]} Sam Altman. ``Moore's Law for Everything.'' Blog post,
+samaltman.com, 2021.
+
+{[}15{]} Friedrich Hayek. ``The Use of Knowledge in Society.''
+\emph{American Economic Review}, 35(4):519--530, 1945.
+
+{[}16{]} Thomas Piketty. \emph{Capital in the Twenty-First Century.}
+Belknap Press, 2013. (Original: \emph{Le Capital au XXIe siècle},
+Éditions du Seuil, 2013.)
+
+{[}17{]} Léon Walras. \emph{Éléments d'économie politique pure.} L.
+Corbaz, 1874.
+
+{[}18{]} Vikram Sharma. ``The Quantum Reserve Token.''
+\emph{arXiv:2503.22056}, 2025.
+
+{[}19{]} Xu et al.~``The Agent Economy.'' \emph{arXiv:2602.14219}, 2026.
+
+{[}20{]} nm-arealnormalman. ``mesh-llm: Distributed LLM Inference.''
+GitHub repository, 2026. https://github.com/nm-arealnormalman/mesh-llm
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Appendix A: Parameter Reference
+Table}\label{appendix-a-parameter-reference-table}
+
+The following table contains all numeric constants defined in the
+canonical parameter specification {[}5{]}, sufficient to reproduce every
+calculation described in this paper.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.0633}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.4557}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2658}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2152}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+§
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Parameter
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Unit
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+§1 & \texttt{cu\_definition} & \(10^{10}\) & FLOP / TRM \\
+§1 & \texttt{cu\_atomic\_unit} & 1 & TRM (minimum) \\
+§2 & \texttt{base\_cu\_per\_token\_small} & 1 & TRM/token \\
+§2 & \texttt{base\_cu\_per\_token\_medium} & 3 & TRM/token \\
+§2 & \texttt{base\_cu\_per\_token\_large} & 8 & TRM/token \\
+§2 & \texttt{base\_cu\_per\_token\_frontier} & 20 & TRM/token \\
+§2 & \texttt{ema\_alpha} & 0.3 & dimensionless \\
+§2 & \texttt{ema\_half\_life\_minutes} & 30 & minutes \\
+§3 & \texttt{welcome\_loan\_amount} & 1,000 & TRM \\
+§3 & \texttt{welcome\_loan\_interest} & 0\% & annual \\
+§3 & \texttt{welcome\_loan\_term\_hours} & 72 & hours \\
+§3 & \texttt{welcome\_loan\_sybil\_threshold} & 100 & unknown nodes \\
+§3 & \texttt{welcome\_loan\_credit\_bonus} & +0.1 & score units \\
+§4 & \texttt{weight\_trade} & 0.3 & dimensionless \\
+§4 & \texttt{weight\_repayment} & 0.4 & dimensionless \\
+§4 & \texttt{weight\_uptime} & 0.2 & dimensionless \\
+§4 & \texttt{weight\_age} & 0.1 & dimensionless \\
+§4 & \texttt{min\_credit\_for\_borrowing} & 0.2 & score units \\
+§4 & \texttt{cold\_start\_credit} & 0.3 & score units \\
+§4 & \texttt{target\_credit\_after\_repay} & 0.4 & score units \\
+§5 & \texttt{min\_reserve\_ratio} & 30\% & of pool \\
+§5 & \texttt{max\_ltv\_ratio} & 3:1 & dimensionless \\
+§5 & \texttt{max\_single\_loan\_pool\_pct} & 20\% & of pool \\
+§5 & \texttt{max\_loan\_term\_hours} & 168 & hours (7 days) \\
+§5 & \texttt{max\_lending\_velocity} & 10 & loans/minute \\
+§6 & \texttt{default\_circuit\_breaker\_threshold} & 10\% &
+defaults/hour \\
+§6 & \texttt{collateral\_burn\_on\_default} & 10\% & of collateral \\
+§6 & \texttt{velocity\_circuit\_breaker\_window} & 1 & hour \\
+§6 & \texttt{velocity\_circuit\_breaker\_threshold} & 50\% & pool
+balance/hr \\
+§7 & \texttt{default\_reputation} & 0.5 & score units \\
+§7 & \texttt{availability\_yield\_rate} & 0.1\% × reputation & per
+hour \\
+§7 & \texttt{inactivity\_decay\_threshold\_days} & 7 & days \\
+§7 & \texttt{inactivity\_decay\_rate} & 0.01 & per day \\
+§7 & \texttt{inactivity\_burn\_threshold\_days} & 90 & days \\
+§7 & \texttt{inactivity\_burn\_rate} & 1\% & per month \\
+§8 & \texttt{cu\_usd\_equilibrium\_rate} & \textasciitilde\$0.00375 &
+USD/TRM \\
+§9 & \texttt{cu\_price\_floor\_usd} & \textasciitilde\$0.000001 &
+USD/TRM \\
+§9 & \texttt{cu\_price\_ceiling\_usd} & \textasciitilde\$0.000132 &
+USD/TRM \\
+§9 & \texttt{mac\_mini\_annual\_cu\_capacity} & \textasciitilde5,000,000
+& TRM/year \\
+§10 & \texttt{risk\_multiplier\_conservative} & 0.5 & dimensionless \\
+§10 & \texttt{risk\_multiplier\_balanced} & 0.8 & dimensionless \\
+§10 & \texttt{risk\_multiplier\_aggressive} & 1.0 & dimensionless \\
+§10 & \texttt{conservative\_max\_commit\_fraction} & 0.30 & of cash \\
+§10 & \texttt{conservative\_reserve\_threshold} & 0.60 & pool ratio \\
+§10 & \texttt{highyield\_base\_commit\_fraction} & 0.50 & of cash \\
+§10 & \texttt{highyield\_lend\_threshold} & 0.40 & pool ratio \\
+§10 & \texttt{default\_margin\_fraction} & 0.10 & of notional \\
+§10 & \texttt{insurance\_base\_rate} & 0.02 & annual rate \\
+§10 & \texttt{insurance\_risk\_premium} & 0.10 & max premium \\
+§10 & \texttt{insurance\_min\_premium} & 1 & TRM \\
+§10 & \texttt{default\_rate} & 0.02 & annual \\
+§10 & \texttt{loss\_given\_default} & 0.50 & fraction \\
+§10 & \texttt{var\_99\_multiplier} & 2.33 & z-score \\
+§11 & \texttt{max\_cu\_per\_cycle} & 5,000 & TRM \\
+§11 & \texttt{max\_cu\_per\_day} & 50,000 & TRM \\
+§11 & \texttt{max\_cycles\_per\_day} & 20 & cycles \\
+§11 & \texttt{min\_score\_delta} & 0.01 & score units \\
+§11 & \texttt{min\_roi\_threshold} & 1.0 & ratio \\
+§11 & \texttt{roi\_cu\_per\_score\_unit} & 100,000 & TRM \\
+§12 & \texttt{rep\_weight\_volume} & 0.40 & dimensionless \\
+§12 & \texttt{rep\_weight\_recency} & 0.30 & dimensionless \\
+§12 & \texttt{rep\_weight\_diversity} & 0.20 & dimensionless \\
+§12 & \texttt{rep\_weight\_consistency} & 0.10 & dimensionless \\
+§12 & \texttt{new\_agent\_reputation} & 0.30 & score units \\
+§12 & \texttt{volume\_cap\_cu} & 100,000 & TRM \\
+§12 & \texttt{recency\_half\_life\_ms} & 86,400,000 & ms (24 hours) \\
+§12 & \texttt{diversity\_cap} & 10 & unique peers \\
+§12 & \texttt{consistency\_min\_trades} & 2 & trades \\
+§12 & \texttt{match\_quality\_weight} & 0.60 & dimensionless \\
+§12 & \texttt{match\_cost\_weight} & 0.40 & dimensionless \\
+§12 & \texttt{price\_score\_tier\_multiplier} & 4.0 & dimensionless \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Appendix B: Reproducibility}\label{appendix-b-reproducibility}
+
+All source code, specifications, and tooling required to reproduce the
+results described in this paper are publicly available:
+
+\textbf{Core protocol (L1-L4, 337 tests):} - Source:
+https://github.com/clearclown/tirami - Build:
+\texttt{cargo\ build\ -\/-release} - Test:
+\texttt{cargo\ test\ -\/-workspace} (337 tests) - Audit:
+\texttt{docs/THEORY-AUDIT.md}
+
+\textbf{Production runtime (L0, 641 tests):} - Source:
+https://github.com/nm-arealnormalman/mesh-llm - Economic layer:
+\texttt{forge-economy/} subdirectory - Test:
+\texttt{cargo\ test\ -\/-workspace}
+
+\textbf{Economic theory and specifications:} - Source:
+https://github.com/clearclown/tirami-economics - Canonical parameters:
+\texttt{spec/parameters.md} - Specification:
+\texttt{spec/forge-economics-spec-v0.2.md} - Theory chapters:
+\texttt{docs/00-introduction.md} through
+\texttt{docs/14-programmable-money.md}
+
+\textbf{Python client SDK:} - Package:
+\texttt{pip\ install\ tirami-sdk==0.3.0} - Repository:
+https://github.com/clearclown/tirami-sdk - Tests: \texttt{pytest} (27
+tests)
+
+\textbf{MCP server for Claude / ChatGPT / Cursor:} - Package:
+\texttt{pip\ install\ tirami-cu-mcp==0.3.0} - Repository:
+https://github.com/clearclown/tirami-cu-mcp
+
+\textbf{Environment:} - Rust edition 2024, resolver v2 - Tested on macOS
+15 (Apple Silicon M4), Linux x86\_64 - Apple Silicon Metal backend
+enabled by default for inference - All tests pass without GPU; inference
+acceleration optional
+
+\end{document}
