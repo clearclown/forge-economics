@@ -402,6 +402,167 @@ llama.cpp サンプラーチェーンに転送される。トークン分布（=
 
 ---
 
+## 20. Constitutional Parameters — Phase 18.1 (ガバナンス改変不可)
+
+Phase 18.1 は「プロトコルの核となる不変量は governance で変えられない」
+という憲法的ラチェットを導入しました。以下のパラメータは `ChangeParameter`
+提案で変更できず、変えるにはソフトウェアのフォークが必要です (つまり、
+変えた瞬間それは「Tirami」ではない別物になる)。
+
+実装: `crates/tirami-ledger/src/governance.rs::IMMUTABLE_CONSTITUTIONAL_PARAMETERS` (18 件)。
+
+**経済基盤の不変量**
+
+| パラメータ | 値 | なぜ憲法的か |
+|---|---|---|
+| `TOTAL_TRM_SUPPLY` | 21 000 000 000 TRM | 上限供給量。変更は全保有者のバランスを希薄化する |
+| `FLOPS_PER_CU` | 10⁹ FLOP | 1 TRM の物理的定義。変更は TRM の価値尺度そのものを壊す |
+| `HALVING_THRESHOLDS` | 50% / 75% / 87.5% / … | 供給減衰のカーブ。短期の政治で変更すれば信頼崩壊 |
+
+**スラッシング不変量**
+
+| パラメータ | 値 | なぜ憲法的か |
+|---|---|---|
+| `SLASH_RATE_MINOR` | 10% | 軽微違反の最低ペナルティ。下回れば抑止効果喪失 |
+| `SLASH_RATE_MAJOR` | 30% | 重大違反の最低ペナルティ |
+| `MIN_PROVIDER_STAKE_CONSTITUTIONAL_FLOOR` | 10 TRM | ステーク最低値の床 (実運用は §23 で 100) |
+
+**暗号・署名不変量**
+
+| パラメータ | 不変条件 | なぜ憲法的か |
+|---|---|---|
+| `CANONICAL_BYTES_V2` | nonce を含むバイト順序 | 署名検証の再現性。変えれば過去のすべての signed trade が無効化 |
+| `SIGNATURE_SCHEME_BASE` | Ed25519 | ベース署名方式。PQ ハイブリッドで増やすのは可、Ed25519 を外すのは不可 |
+
+**ガバナンス・メタ不変量**
+
+| パラメータ | 値 | なぜ憲法的か |
+|---|---|---|
+| `GOVERNANCE_MIN_STAKE_FLOOR` | 100 TRM | 投票閾値の下限。低すぎる stake で富裕層独占を防ぐ |
+| `PROOF_POLICY_RATCHET` | 単調増加のみ | Optional→Recommended→Required は一方向。後退不可 |
+| `WELCOME_LOAN_SUNSET_EPOCH` | 2 | ウェルカムローン廃止タイミング (§22 参照) |
+
+対して、ガバナンスで改変可能なパラメータ
+(`MUTABLE_GOVERNANCE_PARAMETERS`, 21 件) は:
+`WELCOME_LOAN_AMOUNT`, `MAX_LTV_RATIO`, `MIN_RESERVE_RATIO`,
+`MAX_LOAN_TERM_HOURS`, `ANCHOR_INTERVAL_SECS`,
+`AUDIT_CHALLENGE_INTERVAL_SECS`, `MIN_PROVIDER_STAKE_TRM`,
+`STAKELESS_EARN_CAP_TRM`, `PROOF_POLICY` など (詳細: governance.rs)。
+
+---
+
+## 21. 詐欺対策: nonce & 重複署名 — Phase 17.1–17.2
+
+| パラメータ | 値 | 説明 |
+|---|---|---|
+| `trade_nonce_bits` | 128 | TradeRecord v2 の乱数 nonce 長さ。リプレイ防御 |
+| `nonce_cache_per_provider_max` | 10 000 | 1 プロバイダあたり保持する nonce LRU サイズ |
+| `nonce_cache_ttl_hours` | 24 | nonce エントリの生存期間 |
+
+Phase 17 Wave 1.2 で `execute_signed_trade` は nonce 重複を拒否。
+過去の署名済み trade を再送信する古典的リプレイ攻撃を防ぎます。
+
+---
+
+## 22. ウェルカムローン・サンセット — Phase 18.2
+
+| パラメータ | 値 | 変更可否 |
+|---|---|---|
+| `WELCOME_LOAN_SUNSET_EPOCH` | 2 | 憲法的 (一方向) |
+
+エポック 2 到達 (≥ 87.5% 供給発行時点) 以降、welcome loan は
+恒久的に停止します。Filecoin の bootstrap grant と同じ思想:
+「初期は撒くが、ネットワーク成熟後は stake を積まない新規参加を
+許さない」— これにより長期的な Sybil 攻撃面を縮小します。
+
+一度 sunset すると戻せません。戻したい operator は
+ソフトウェアをフォークする必要があります (フォーク後のネットワーク
+を「Tirami」と呼ぶかどうかは community が決める問題)。
+
+実装: `ComputeLedger::can_issue_welcome_loan`。
+
+---
+
+## 23. Stake-Required Mining — Phase 18.2
+
+以前は TRM をゼロ stake でいくらでも稼げた。Phase 18.2 以降、
+プロバイダは以下のいずれかを満たす必要があります:
+
+| パラメータ | 値 | 可変性 |
+|---|---|---|
+| `MIN_PROVIDER_STAKE_TRM` | 100 TRM | ガバナンスで変更可 (ただし §20 の floor = 10 以下にはできない) |
+| `STAKELESS_EARN_CAP_TRM` | 10 TRM | ブートストラップの無 stake 許容枠 (一度使い切ると stake が必要) |
+| `MIN_PROVIDER_STAKE_CONSTITUTIONAL_FLOOR` | 10 TRM | 憲法床 — これ以下には governance で下げられない |
+| `STAKELESS_EARN_CAP_MAXIMUM` | 100 TRM | 無 stake 枠の憲法天井 |
+
+さらに、**過去に slash された** ノードは stakeless 経路を一切使えません
+(rehabilitation には stake を積むしかない)。
+
+動機: Phase 17 でスラッシング基盤ができたが、stake のない provider
+には teeth がない。stake を全員に要求することで、経済的コストを伴う
+違反抑止を機能させる。
+
+実装: `ComputeLedger::can_provide_inference(node, &StakingPool, now)`。
+
+---
+
+## 24. ProofPolicy ラチェット — Phase 18.3
+
+zkML (zero-knowledge ML proof-of-inference) の段階的導入ゲート。
+4 状態を単調増加でラチェット:
+
+| 状態 | u8 値 | 意味 |
+|---|---|---|
+| `Disabled` | 0 | 証明を一切参照しない (Phase 17 以前のデフォルト) |
+| `Optional` | 1 | 証明付きなら reputation ボーナス (Phase 19 デフォルト) |
+| `Recommended` | 2 | 証明無しは audit tier ペナルティ |
+| `Required` | 3 | 証明無しの trade は ledger で拒否 (Constitutional: 到達後は不可逆) |
+
+| パラメータ | 値 | 可変性 |
+|---|---|---|
+| `PROOF_POLICY` | Optional | ガバナンスで単調増加のみ可 |
+| `PROOF_POLICY_RATCHET` | monotonic | 憲法的 (下げるな) |
+
+実装: `crates/tirami-ledger/src/zk.rs::ProofPolicy`、
+`try_ratchet_proof_policy` で下げる変更を reject。
+
+候補バックエンド (`crates/tirami-zkml-bench`):
+- ezkl (primary, ONNX-native) — Phase 20 統合予定
+- risc0 (secondary, Rust-native 証明)
+- halo2_proofs (SPoRA カスタム回路用)
+
+---
+
+## 25. Secondary Markets & Tokenization — Phase 19 (規範的)
+
+Tirami は MIT ライセンスの OSS です。TRM は**計算の会計単位**で
+あって、金融商品ではありません。Phase 19 以降、repo ルート
+(`SECURITY.md`、`README.md`、`docs/deployments/README.md`) に
+以下の立場が明文化されています:
+
+- メンテナは TRM を ICO / pre-sale / airdrop / private round で販売しない。
+- メンテナは第三者による二次市場・ブリッジ・デリバティブから
+  revenue share を受けない。
+- OSS ゆえに、メンテナの知らないところで第三者が TRM を
+  ブリッジ・上場・投機することを**技術的に防ぐ手段はない**。
+- そのような二次市場リスクは**保有者・取引者が自己責任で引き受ける**。
+
+この立場は `1 TRM = 10⁹ FLOP` という物理定義 (§1) と矛盾しません。
+TRM は市場価格ゼロでも「計算と交換できる会計単位」として機能し、
+それが本義です。
+
+Mainnet deploy ゲート (`repos/tirami-contracts/Makefile`):
+
+| パラメータ | 値 | 説明 |
+|---|---|---|
+| `AUDIT_CLEARANCE` | 環境変数 (`yes` 必須) | 外部セキュリティ監査完了の宣言 |
+| `MULTISIG_OWNER` | 環境変数 (非空必須) | `Ownable::owner` の譲渡先 (multi-sig) |
+| `i-accept-responsibility` | 対話プロンプト入力必須 | オペレータが責任を明示的に引き受けた証跡 |
+
+上記を全て満たさない限り `make deploy-base-mainnet` は実行を拒否します。
+
+---
+
 ## 変更履歴
 
 - v0.1 (2026-04): 初版作成 (M-6)
@@ -411,6 +572,12 @@ llama.cpp サンプラーチェーンに転送される。トークン分布（=
   Supply cap 21B TRM、半減期、ステーキング、Slashing、紹介ボーナス、
   レアリティスコア、ガバナンスエポック。
   詳細は `spec/tokenomics.md` と `spec/game-theory.md` を参照。
+- v0.5 (2026-04-19): §20-§25 追加 (Phase 17-19 security + Tier C/D enablers)。
+  Constitutional parameters (憲法的ラチェット)、nonce & replay 対策、
+  welcome loan サンセット、stake-required mining、ProofPolicy ラチェット、
+  secondary-market disclaimer。詳細は
+  `tirami/docs/constitution.md`、`tirami/docs/zkml-strategy.md`、
+  `tirami/SECURITY.md` を参照。
 
 ---
 
