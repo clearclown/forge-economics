@@ -2,6 +2,14 @@
 
 > 経済学を知らなくても大丈夫。ここから始めよう。
 
+**Status (2026-04-19):** Tirami 実装は Phase 19 到達。このリポジトリの経済論は §1–§18 までカバー:
+- §15 [Constitutional Parameters](docs/15-constitutional-parameters.md) — 憲法的に改変不能な不変量 (Phase 18.1)
+- §16 [Stake-Required Mining](docs/16-stake-required-mining.md) — TRM を稼ぐのに stake を要求する (Phase 18.2)
+- §17 [Proof of Useful Work — zkML](docs/17-proof-of-useful-work.md) — 計算結果の暗号的証明 (Phase 18.3)
+- §18 [Secondary Markets & Tokenization](docs/18-secondary-markets.md) — 二次市場リスクの明示放棄 (Phase 19)
+
+詳細: [`spec/parameters.md`](spec/parameters.md) (v0.5、§20–§25 追加)。
+
 ## これは何？
 
 **Tirami** は、AI エージェントが自律的に「計算（コンピュート）」を稼ぎ、使い、貸し借りする分散プロトコルです。このリポジトリは、Tirami の経済の仕組みを**経済学の初心者にもわかるように**解説します。

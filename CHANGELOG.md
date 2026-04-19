@@ -4,6 +4,15 @@
 
 ## [Unreleased]
 
+### Added — Phase 17–19 sync (2026-04-19)
+- `docs/15-constitutional-parameters.md` — 憲法的ラチェットの経済論 (Phase 18.1)
+- `docs/16-stake-required-mining.md` — stake 要求の経済論 (Phase 18.2)
+- `docs/17-proof-of-useful-work.md` — zkML 証明の経済論 (Phase 18.3)
+- `docs/18-secondary-markets.md` — 二次市場リスクの明示放棄 (Phase 19)
+- `spec/parameters.md §20–§25` — Constitutional params / nonce & replay /
+  welcome loan sunset / stake-required mining / ProofPolicy ratchet /
+  secondary-market disclaimer の数値定数
+
 ### Added
 - SPEC-AUDIT.md (現状監査レポート)
 - scripts/verify-audit.sh (TDD 形式の回帰テスト)
