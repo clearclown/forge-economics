@@ -1,0 +1,62 @@
+% Preamble for pandoc → xelatex build of compute-standard.
+% Unicode-safe font chain so →, ↔, ≈, etc. render.
+\usepackage{fontspec}
+\usepackage{unicode-math}
+
+% Main text — STIX Two Text (ships with macOS, excellent math/arrow
+% coverage, readable at 11pt). For arXiv submission this will be
+% swapped to a TeX Live-only font chain (Latin Modern) in the
+% arxiv build; for interactive builds on the author's mac STIX is
+% the best default.
+\setmainfont{STIX Two Text}[Ligatures=TeX]
+\setmonofont{Menlo}[Scale=0.85]
+% Leave sans default (will fall through to Latin Modern Sans via TeX).
+
+% Math — stix2 is the matching math font if we had unicode-math
+% configured. For now rely on unicode-math's default.
+
+% Manual glyph fallback for arrows / math operators that some main
+% fonts miss. We declare them via newunicodechar so pandoc's
+% direct-unicode output still typesets.
+\usepackage{newunicodechar}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{↔}{\ensuremath{\leftrightarrow}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+\newunicodechar{≠}{\ensuremath{\neq}}
+\newunicodechar{∼}{\ensuremath{\sim}}
+\newunicodechar{×}{\ensuremath{\times}}
+\newunicodechar{·}{\ensuremath{\cdot}}
+\newunicodechar{⁻}{\ensuremath{^{-}}}
+\newunicodechar{¹}{\ensuremath{^{1}}}
+\newunicodechar{²}{\ensuremath{^{2}}}
+\newunicodechar{³}{\ensuremath{^{3}}}
+\newunicodechar{⁴}{\ensuremath{^{4}}}
+\newunicodechar{⁵}{\ensuremath{^{5}}}
+\newunicodechar{⁶}{\ensuremath{^{6}}}
+\newunicodechar{⁷}{\ensuremath{^{7}}}
+\newunicodechar{⁸}{\ensuremath{^{8}}}
+\newunicodechar{⁹}{\ensuremath{^{9}}}
+\newunicodechar{⁰}{\ensuremath{^{0}}}
+\newunicodechar{‚}{,}
+\newunicodechar{–}{--}
+\newunicodechar{—}{---}
+\newunicodechar{…}{\ldots}
+
+% Link + code block polish.
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  urlcolor=blue!60!black,
+  citecolor=blue!50!black,
+}
+
+% Tighter verbatim so code blocks don't overflow.
+\usepackage{fvextra}
+\fvset{breaklines=true,breakanywhere=true,fontsize=\small}
+
+% arXiv prefers a fixed header with affiliations; we keep it minimal.
+\usepackage{authblk}
