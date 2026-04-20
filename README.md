@@ -35,9 +35,10 @@ Tirami 実装 ([clearclown/tirami](https://github.com/clearclown/tirami)) は Ph
 
 ❌ **Not done**:
 - External security audit (Phase 17 Wave 3.3 の gate — candidates: Trail of Bits, Zellic, Open Zeppelin, Least Authority)。
-- Base L2 mainnet deploy (`make deploy-base-mainnet` は `AUDIT_CLEARANCE=yes` + `MULTISIG_OWNER` + 対話プロンプトの 3 連鎖で gated、監査完了まで実行拒否)。
 - Live bug bounty (PGP 鍵は placeholder 明記、プログラム未稼働)。
 - 10-ノード 7-日 stress test、Base Sepolia 30-日 stable 運用。
+
+**mainnet について**: メンテナは TRM / TiramiBridge の Base L2 mainnet デプロイを計画・運用・追跡**しません**。`make deploy-base-mainnet` ターゲットは、自らデプロイを選ぶ運用者のための**自己防護チェック** (`AUDIT_CLEARANCE=yes` + `MULTISIG_OWNER` + 対話プロンプトの 3 連鎖がないと実行を拒否) であって、メンテナの権限ゲートではない。MIT OSS なので第三者が独自にデプロイすることは技術的に可能だが、それは第三者自身の判断と責任であり、メンテナは関与しない。
 
 **このリポジトリの経済論** (`docs/00–18.md` + `spec/*`) は上記の Status を前提としています。特に §16–§17 は「将来の設計意図」として記述され、現状の production 動作ではないことを各章冒頭で明記しています。
 

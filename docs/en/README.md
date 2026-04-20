@@ -41,9 +41,10 @@ The Tirami implementation ([clearclown/tirami](https://github.com/clearclown/tir
 
 ❌ **Not done**:
 - External security audit (Phase 17 Wave 3.3 gate — candidates: Trail of Bits, Zellic, Open Zeppelin, Least Authority).
-- Base L2 mainnet deploy (`make deploy-base-mainnet` refuses to run without `AUDIT_CLEARANCE=yes` + `MULTISIG_OWNER` + an interactive prompt; gated until audit completes).
 - Live bug bounty (PGP key is documented as placeholder, program not active).
 - 10-node 7-day stress test, Base Sepolia 30-day stable operation.
+
+**On mainnet**: the maintainers **do not** plan, operate, or track any Base L2 mainnet deploy of TRM / TiramiBridge. The `make deploy-base-mainnet` target is a **self-protective check** for any operator who chooses to deploy — it refuses to run without `AUDIT_CLEARANCE=yes` + `MULTISIG_OWNER` + an interactive `i-accept-responsibility` prompt. Since this is MIT OSS, a third party can deploy regardless; they do so entirely under their own decision and responsibility, without any maintainer involvement.
 
 The economic theory in this repository (`docs/00–18.md` + `spec/*`) presumes the status above. In particular, §16–§17 are written as *future design intent*, not current production behavior — each chapter states this explicitly at the top.
 
