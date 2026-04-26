@@ -14,32 +14,59 @@
 
 ---
 
-## Status Honesty (2026-04-19)
+## Status Honesty (2026-04-27)
 
 Tirami 実装 ([clearclown/tirami](https://github.com/clearclown/tirami)) は Phase 19 到達。**何が動いていて何がまだ設計段階なのか**を明記します:
 
-✅ **Functional today** (1 192 Rust unit tests + 15 Solidity tests pass):
+✅ **Functional today** (対象テスト検証済み、public-testnet 準備中):
 - HTTP チャット推論 + iroh P2P forward による dual-signed TRM trade
+- ローカル HTTP `/chat` / `/chat/stream` / `/v1/chat/completions` の TRM/FLOP 台帳記録
 - 128-bit nonce によるリプレイ攻撃防御 (`execute_signed_trade`)
 - Collusion detector + Slashing loop (production で常時稼働)
 - Welcome loan + Constitutional sunset エポック 2
 - Governance proposals (21 mutable parameters, 18 憲法的不変)
 - Staking pool + Referral + Ledger persistence
+- `PriceSignal.http_endpoint` gossip による provider discovery
+- PersonalAgent の remote dispatch: peer hint なしで provider を選択し、共有トークン private testnet では caller bearer token を継承
+- provider / consumer 双方の ledger mirror と restart 後復元
+- `--bootstrap-peer` / `TIRAMI_BOOTSTRAP_PEERS` による direct public-testnet join。公開 HTTP bind には API token 必須
 
 🟡 **Scaffolded (spec & types exist, but not production-wired)**:
 - zkML proof-of-inference: `MockBackend` のみ (shape test 用で暗号的に無効)。ezkl / risc0 統合は Phase 20+ の予定 ([§17 参照](docs/17-proof-of-useful-work.md))。
 - Stake-required mining gate: 関数 `can_provide_inference` は実装済みだが HTTP/P2P trade 実行パスで enforce されていない ([§16 参照](docs/16-stake-required-mining.md))。
 - ML-DSA post-quantum hybrid signatures: 実装存在、default off (iroh 依存衝突のため)。
 - TEE attestation (Apple Secure Enclave / NVIDIA H100 CC): scaffold のみ。
-- Daemon-mode worker の gossip recv ループ (peer auto-discovery、issue #88)。
+- Daemon-mode worker の gossip recv ループ (full `tirami start` node は gossip を受信・反映できるが、`worker --daemon` は未完、issue #88)。
 
 ❌ **Not done**:
 - External security audit (Phase 17 Wave 3.3 の gate — candidates: Trail of Bits, Zellic, Open Zeppelin, Least Authority)。
 - Base L2 mainnet deploy (`make deploy-base-mainnet` は `AUDIT_CLEARANCE=yes` + `MULTISIG_OWNER` + 対話プロンプトの 3 連鎖で gated、監査完了まで実行拒否)。
 - Live bug bounty (PGP 鍵は placeholder 明記、プログラム未稼働)。
 - 10-ノード 7-日 stress test、Base Sepolia 30-日 stable 運用。
+- 公開 seed list / status page。現状の検証は private Tailscale lab であり、open public network ではない。
 
 **このリポジトリの経済論** (`docs/00–18.md` + `spec/*`) は上記の Status を前提としています。特に §16–§17 は「将来の設計意図」として記述され、現状の production 動作ではないことを各章冒頭で明記しています。
+
+### 2026-04-26 private-lab result
+
+Mac Studio (`100.112.10.128`) と ASUS ROG X13 (`100.107.30.86`) の2台を
+Tailscale 上で接続し、`qwen2.5:0.5b`、P2P `0.0.0.0:7700`、HTTP
+`100.x:3000`、共有 `TIRAMI_API_TOKEN` で検証した。
+
+- ASUS が `size=remote` かつ explicit peer hint なしで agent task を投入した。
+- ASUS は gossip された `PriceSignal.http_endpoint` から Mac Studio provider を選択した。
+- bearer token と `X-Tirami-Node-Id` が provider へ forward された。
+- Mac Studio は inference を返し、provider earning を記録した。
+- ASUS は同じ provider/consumer trade を local ledger に mirror し、agent spending を記録した。
+- restart 後も両 ledger が trade を復元した。
+
+remote agent job 2回後の観測値:
+
+- both ledgers: `total_trades = 2`
+- Mac Studio agent: `earned_today_trm = 18`
+- ASUS agent: `spent_today_trm = 18`
+
+この結果は「需要が証明された」ではなく、「需要を測るための最小ネットワークが動いた」という意味で扱う。公開時の主張は、TRM を投資対象ではなく推論ジョブの内部精算単位として説明する。
 
 ---
 
